@@ -17,7 +17,17 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
     [Authorize]
     public class ProjectController : BaseController
     {
+        [Route("")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetList()
+        {
+           var projectList = DB.Projects.ToList();
+
+            return StatusOk(projectList);
+        }
+
         [Route("Create")]
+        [HttpPost]
         public async Task<HttpResponseMessage> Create(ProjectModel model)
         {
             if (!ModelState.IsValid)
@@ -35,7 +45,7 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
 
             await DB.SaveChangesAsync();
 
-            return this.StatusOk();
+            return StatusOk();
         }
 
     }
