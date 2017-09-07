@@ -66,6 +66,11 @@ namespace BugTrackerApi.Controllers
                                 errors);
         }
 
+        public HttpResponseMessage StatusOk()
+        {
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
         public HttpResponseMessage StatusOk<T>(T arg)
         {
             return Request.CreateResponse(HttpStatusCode.OK, arg);
