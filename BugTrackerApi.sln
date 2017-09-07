@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTrackerApi", "BugTracker
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBLayer", "DBLayer\DBLayer.csproj", "{CE921F4C-5C9C-468E-83DE-CBC7AA1D5EB8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{91CB33D0-6487-40E1-AD0A-D6B0EAB4BBB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErrorCatcher", "ErrorCatcher\ErrorCatcher.csproj", "{12D51598-C874-4392-BF17-DB3610F80B37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{CE921F4C-5C9C-468E-83DE-CBC7AA1D5EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE921F4C-5C9C-468E-83DE-CBC7AA1D5EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE921F4C-5C9C-468E-83DE-CBC7AA1D5EB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91CB33D0-6487-40E1-AD0A-D6B0EAB4BBB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91CB33D0-6487-40E1-AD0A-D6B0EAB4BBB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91CB33D0-6487-40E1-AD0A-D6B0EAB4BBB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91CB33D0-6487-40E1-AD0A-D6B0EAB4BBB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12D51598-C874-4392-BF17-DB3610F80B37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12D51598-C874-4392-BF17-DB3610F80B37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12D51598-C874-4392-BF17-DB3610F80B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12D51598-C874-4392-BF17-DB3610F80B37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

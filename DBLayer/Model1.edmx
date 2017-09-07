@@ -104,6 +104,7 @@
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="DateCreated" Type="datetime" Nullable="false" />
           <Property Name="DateModified" Type="datetime" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="TimeLogs">
           <Key>
@@ -508,6 +509,7 @@
           <Property Name="DateModified" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Issues" Relationship="BugTrackerModel.FK_Issues_Projects" FromRole="Project" ToRole="Issue" />
           <NavigationProperty Name="ProjectAccesses" Relationship="BugTrackerModel.FK_ProjectAccess_Projects" FromRole="Project" ToRole="ProjectAccess" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="TimeLog">
           <Key>
@@ -759,6 +761,7 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="BugTrackerModel.Project">
               <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="DateModified" ColumnName="DateModified" />
                 <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
