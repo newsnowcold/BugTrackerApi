@@ -12,6 +12,8 @@ namespace DBLayer
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class BugTrackerEntities : DbContext
     {
@@ -36,5 +38,14 @@ namespace DBLayer
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<TimeLog> TimeLogs { get; set; }
         public virtual DbSet<User> Users { get; set; }
+    
+        public virtual ObjectResult<GET_list_company_Result> GET_list_company(Nullable<int> userId)
+        {
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_list_company_Result>("GET_list_company", userIdParameter);
+        }
     }
 }

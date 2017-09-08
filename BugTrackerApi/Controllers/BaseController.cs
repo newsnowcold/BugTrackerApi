@@ -90,6 +90,7 @@ namespace BugTrackerApi.Controllers
             get
             {
                 return this._userManager.FindById(CurrentAspNetUserId).UserId;
+                //return 1;
             }
         }
 

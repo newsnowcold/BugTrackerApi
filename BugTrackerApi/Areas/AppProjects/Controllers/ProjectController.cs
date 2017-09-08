@@ -4,6 +4,8 @@ using DBLayer;
 using ErrorCatcher.ApiFilters;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -21,7 +23,7 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetList()
         {
-           var projectList = DB.Projects.ToList();
+            var projectList = DB.GET_list_company(this.CurrentUserId);
 
             return StatusOk(projectList);
         }
@@ -35,17 +37,45 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
                 this.InvalidModelState(ModelState);
             }
 
-            DB.Projects.Add(new Project()
+            var newProj = new Project()
             {
                 CreatedBy = this.CurrentUserId,
                 DateCreated = DateTime.UtcNow,
                 Name = model.Name,
                 Description = model.Description
-            });
+            };
 
-            await DB.SaveChangesAsync();
+            using (var context = DB)
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        DB.Projects.Add(newProj);
 
-            return StatusOk();
+                        await DB.SaveChangesAsync();
+
+                        DB.ProjectAccesses.Add(new ProjectAccess()
+                        {
+                            UserId = this.CurrentUserId,
+                            ProjectId = newProj.Id,
+                            AccessTypeId = 1
+                        });
+
+                        await DB.SaveChangesAsync();
+
+                        dbContextTransaction.Commit();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        dbContextTransaction.Rollback();
+
+                        throw new Exception("Error on edmx");
+                    }
+                }
+            }
+
+            return StatusOk(newProj);
         }
 
     }
