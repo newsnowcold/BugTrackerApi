@@ -27,6 +27,10 @@
         <AssociationConnector Association="BugTrackerModel.FK_ProjectAccess_Users" />
         <AssociationConnector Association="BugTrackerModel.FK_TimeLogs_Users" />
         <AssociationConnector Association="BugTrackerModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="BugTrackerModel.IssueStatus" Width="1.5" PointX="0.75" PointY="11.875" />
+        <EntityTypeShape EntityType="BugTrackerModel.PriorityType" Width="1.5" PointX="5.375" PointY="0.875" />
+        <AssociationConnector Association="BugTrackerModel.FK_Issues_IssueStatuses" />
+        <AssociationConnector Association="BugTrackerModel.FK_Issues_PriorityTypes" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

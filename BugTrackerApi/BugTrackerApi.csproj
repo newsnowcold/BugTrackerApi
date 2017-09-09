@@ -215,6 +215,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\AppProjects\Controllers\ProjectController.cs" />
     <Compile Include="Areas\AppProjects\Models\ProjectModel.cs" />
+    <Compile Include="Areas\FiledIssue\Controllers\IssueController.cs" />
+    <Compile Include="Areas\FiledIssue\Models\IssueModel.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />
     <Compile Include="Areas\HelpPage\Controllers\HelpController.cs" />
@@ -243,6 +245,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Areas\ProjectMembers\Controllers\ProjectMemberController.cs" />
+    <Compile Include="Areas\ProjectMembers\Models\MembersModel.cs" />
     <Compile Include="Areas\Users\Controllers\UserController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />

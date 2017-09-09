@@ -78,6 +78,24 @@
           <Property Name="DateClosed" Type="datetime" />
           <Property Name="ResolutionSummary" Type="nvarchar" MaxLength="255" />
           <Property Name="ProjectId" Type="int" Nullable="false" />
+          <Property Name="PriorityId" Type="int" Nullable="false" />
+          <Property Name="StatusId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IssueStatuses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="PriorityTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PriorityType" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="ProjectAccess">
           <Key>
@@ -206,6 +224,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Issues_IssueStatuses">
+          <End Role="IssueStatuses" Type="Self.IssueStatuses" Multiplicity="1" />
+          <End Role="Issues" Type="Self.Issues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IssueStatuses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Issues">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Issues_PriorityTypes">
+          <End Role="PriorityTypes" Type="Self.PriorityTypes" Multiplicity="1" />
+          <End Role="Issues" Type="Self.Issues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PriorityTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Issues">
+              <PropertyRef Name="PriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Issues_Projects">
           <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
           <End Role="Issues" Type="Self.Issues" Multiplicity="*" />
@@ -278,7 +320,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="GET_list_company" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+        <Function Name="GET_list_issues" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserId" Type="int" Mode="In" />
+          <Parameter Name="ProjectId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GET_list_projects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserId" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="BugTrackerModelStoreContainer">
@@ -289,6 +335,8 @@
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IssueAssignments" EntityType="Self.IssueAssignments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Issues" EntityType="Self.Issues" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IssueStatuses" EntityType="Self.IssueStatuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PriorityTypes" EntityType="Self.PriorityTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProjectAccess" EntityType="Self.ProjectAccess" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProjectAccessTypes" EntityType="Self.ProjectAccessTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
@@ -317,6 +365,14 @@
           <AssociationSet Name="FK_IssueAssignments_Users" Association="Self.FK_IssueAssignments_Users">
             <End Role="Users" EntitySet="Users" />
             <End Role="IssueAssignments" EntitySet="IssueAssignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Issues_IssueStatuses" Association="Self.FK_Issues_IssueStatuses">
+            <End Role="IssueStatuses" EntitySet="IssueStatuses" />
+            <End Role="Issues" EntitySet="Issues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Issues_PriorityTypes" Association="Self.FK_Issues_PriorityTypes">
+            <End Role="PriorityTypes" EntitySet="PriorityTypes" />
+            <End Role="Issues" EntitySet="Issues" />
           </AssociationSet>
           <AssociationSet Name="FK_Issues_Projects" Association="Self.FK_Issues_Projects">
             <End Role="Projects" EntitySet="Projects" />
@@ -403,9 +459,23 @@
             <End Role="AspNetRole" EntitySet="AspNetRoles" />
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
           </AssociationSet>
-          <FunctionImport Name="GET_list_company" ReturnType="Collection(BugTrackerModel.GET_list_company_Result)">
-            <Parameter Name="UserId" Mode="In" Type="Int32" />
+          <FunctionImport Name="GET_list_projects" ReturnType="Collection(BugTrackerModel.GET_list_projects_Result)">
+          <Parameter Name="UserId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="GET_list_issues" ReturnType="Collection(BugTrackerModel.GET_list_issues_Result)">
+            <Parameter Name="UserId" Mode="In" Type="Int32" />
+            <Parameter Name="ProjectId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="IssueStatuses" EntityType="BugTrackerModel.IssueStatus" />
+          <EntitySet Name="PriorityTypes" EntityType="BugTrackerModel.PriorityType" />
+          <AssociationSet Name="FK_Issues_IssueStatuses" Association="BugTrackerModel.FK_Issues_IssueStatuses">
+            <End Role="IssueStatus" EntitySet="IssueStatuses" />
+            <End Role="Issue" EntitySet="Issues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Issues_PriorityTypes" Association="BugTrackerModel.FK_Issues_PriorityTypes">
+            <End Role="PriorityType" EntitySet="PriorityTypes" />
+            <End Role="Issue" EntitySet="Issues" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AspNetRole">
           <Key>
@@ -483,6 +553,10 @@
           <NavigationProperty Name="IssueAssignments" Relationship="BugTrackerModel.FK_IssueAssignments_Issues" FromRole="Issue" ToRole="IssueAssignment" />
           <NavigationProperty Name="Project" Relationship="BugTrackerModel.FK_Issues_Projects" FromRole="Issue" ToRole="Project" />
           <NavigationProperty Name="TimeLogs" Relationship="BugTrackerModel.FK_TimeLogs_Issues" FromRole="Issue" ToRole="TimeLog" />
+          <Property Name="PriorityId" Type="Int32" Nullable="false" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="IssueStatus" Relationship="BugTrackerModel.FK_Issues_IssueStatuses" FromRole="Issue" ToRole="IssueStatus" />
+          <NavigationProperty Name="PriorityType" Relationship="BugTrackerModel.FK_Issues_PriorityTypes" FromRole="Issue" ToRole="PriorityType" />
         </EntityType>
         <EntityType Name="ProjectAccess">
           <Key>
@@ -670,7 +744,7 @@
           <End Type="BugTrackerModel.AspNetRole" Role="AspNetRole" Multiplicity="*" />
           <End Type="BugTrackerModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
         </Association>
-        <ComplexType Name="GET_list_company_Result">
+        <ComplexType Name="GET_list_projects_Result">
           <Property Type="Int32" Name="Id" Nullable="false" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="150" />
           <Property Type="String" Name="Description" Nullable="true" MaxLength="255" />
@@ -679,6 +753,57 @@
           <Property Type="String" Name="CreatedBy" Nullable="true" MaxLength="201" />
           <Property Type="String" Name="AccessType" Nullable="true" MaxLength="100" />
         </ComplexType>
+        <ComplexType Name="GET_list_issues_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="false" MaxLength="150" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="255" />
+          <Property Type="DateTime" Name="DateCreated" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="DateClosed" Nullable="true" Precision="23" />
+          <Property Type="String" Name="ResolutionSummary" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="CreatedBy" Nullable="true" MaxLength="201" />
+        </ComplexType>
+        <EntityType Name="IssueStatus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Issues" Relationship="BugTrackerModel.FK_Issues_IssueStatuses" FromRole="IssueStatus" ToRole="Issue" />
+        </EntityType>
+        <EntityType Name="PriorityType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PriorityType1" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Issues" Relationship="BugTrackerModel.FK_Issues_PriorityTypes" FromRole="PriorityType" ToRole="Issue" />
+        </EntityType>
+        <Association Name="FK_Issues_IssueStatuses">
+          <End Type="BugTrackerModel.IssueStatus" Role="IssueStatus" Multiplicity="1" />
+          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IssueStatus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Issue">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Issues_PriorityTypes">
+          <End Type="BugTrackerModel.PriorityType" Role="PriorityType" Multiplicity="1" />
+          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PriorityType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Issue">
+              <PropertyRef Name="PriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -743,6 +868,8 @@
           <EntitySetMapping Name="Issues">
             <EntityTypeMapping TypeName="BugTrackerModel.Issue">
               <MappingFragment StoreEntitySet="Issues">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="PriorityId" ColumnName="PriorityId" />
                 <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
                 <ScalarProperty Name="ResolutionSummary" ColumnName="ResolutionSummary" />
                 <ScalarProperty Name="DateClosed" ColumnName="DateClosed" />
@@ -815,9 +942,9 @@
               <ScalarProperty Name="Id" ColumnName="RoleId" />
             </EndProperty>
           </AssociationSetMapping>
-          <FunctionImportMapping FunctionImportName="GET_list_company" FunctionName="BugTrackerModel.Store.GET_list_company">
+          <FunctionImportMapping FunctionImportName="GET_list_projects" FunctionName="BugTrackerModel.Store.GET_list_projects">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_company_Result">
+              <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_projects_Result">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
@@ -828,6 +955,37 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GET_list_issues" FunctionName="BugTrackerModel.Store.GET_list_issues">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_issues_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="DateClosed" ColumnName="DateClosed" />
+                <ScalarProperty Name="ResolutionSummary" ColumnName="ResolutionSummary" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="IssueStatuses">
+            <EntityTypeMapping TypeName="BugTrackerModel.IssueStatus">
+              <MappingFragment StoreEntitySet="IssueStatuses">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PriorityTypes">
+            <EntityTypeMapping TypeName="BugTrackerModel.PriorityType">
+              <MappingFragment StoreEntitySet="PriorityTypes">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="PriorityType1" ColumnName="PriorityType" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

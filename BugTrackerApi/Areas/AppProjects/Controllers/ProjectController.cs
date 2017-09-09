@@ -23,12 +23,12 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetList()
         {
-            var projectList = DB.GET_list_company(this.CurrentUserId);
+            var projectList = DB.GET_list_projects(this.CurrentUserId);
 
             return StatusOk(projectList);
         }
 
-        [Route("Create")]
+        [Route("")]
         [HttpPost]
         public async Task<HttpResponseMessage> Create(ProjectModel model)
         {

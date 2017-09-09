@@ -30,11 +30,15 @@ namespace DBLayer
         public Nullable<System.DateTime> DateClosed { get; set; }
         public string ResolutionSummary { get; set; }
         public int ProjectId { get; set; }
+        public int PriorityId { get; set; }
+        public int StatusId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IssueAssignment> IssueAssignments { get; set; }
         public virtual Project Project { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TimeLog> TimeLogs { get; set; }
+        public virtual IssueStatus IssueStatus { get; set; }
+        public virtual PriorityType PriorityType { get; set; }
     }
 }
