@@ -215,8 +215,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\AppProjects\Controllers\ProjectController.cs" />
     <Compile Include="Areas\AppProjects\Models\ProjectModel.cs" />
-    <Compile Include="Areas\FiledIssue\Controllers\IssueController.cs" />
-    <Compile Include="Areas\FiledIssue\Models\IssueModel.cs" />
+    <Compile Include="Areas\FiledIssues\Controllers\IssueController.cs" />
+    <Compile Include="Areas\FiledIssues\Models\IssueModel.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />
     <Compile Include="Areas\HelpPage\Controllers\HelpController.cs" />
@@ -245,6 +245,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Areas\PriorityTypes\Controllers\PriorityTypeController.cs" />
+    <Compile Include="Areas\Statuses\Controllers\StatusController.cs" />
     <Compile Include="Areas\ProjectMembers\Controllers\ProjectMemberController.cs" />
     <Compile Include="Areas\ProjectMembers\Models\MembersModel.cs" />
     <Compile Include="Areas\Users\Controllers\UserController.cs" />
@@ -394,6 +396,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\PriorityTypes\Models\" />
+    <Folder Include="Areas\Statuses\Models\" />
     <Folder Include="Areas\Users\Models\" />
   </ItemGroup>
   <ItemGroup>
