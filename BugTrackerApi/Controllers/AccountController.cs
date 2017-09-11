@@ -266,7 +266,7 @@ namespace BugTrackerApi.Controllers
                 ClaimsIdentity cookieIdentity = await user.GenerateUserIdentityAsync(UserManager,
                     CookieAuthenticationDefaults.AuthenticationType);
 
-                AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(user.UserName);
+                AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(user.UserName, user.UserId);
                 Authentication.SignIn(properties, oAuthIdentity, cookieIdentity);
             }
             else
