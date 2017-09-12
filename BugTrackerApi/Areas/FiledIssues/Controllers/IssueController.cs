@@ -19,7 +19,7 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
     {
 
         [HttpGet]
-        [Route("{projectId}")]
+        [Route("Project/{projectId}")]
         public async Task<HttpResponseMessage> GetList(int projectId)
         {
             var result = DB.GET_list_issues(this.CurrentUserId, projectId);
@@ -28,7 +28,7 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
         }
 
         [HttpPost]
-        [Route("{projectId}")]
+        [Route("Project/{projectId}")]
         public async Task<HttpResponseMessage> Create(IssueModel model, int projectId)
         {
             if (!ModelState.IsValid) return this.InvalidModelState(ModelState);
@@ -53,22 +53,26 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
         }
 
         [HttpPatch]
-        [Route("{projectId}/issue/{bugId}")]
-        public async Task<HttpResponseMessage> UpdateStatus(UpdateIssueModel model, int projectId, int bugId)
+        [Route("Project/{projectId}")]
+        public async Task<HttpResponseMessage> UpdateStatus(UpdateIssueModel model, int projectId)
         {
             if (!ModelState.IsValid)
             {
                 return InvalidModelState(ModelState);
             }
 
-            var issue = DB.Issues.Where(a => a.PriorityId == projectId && a.Id == bugId).FirstOrDefault();
+            var issue = DB.Issues.Where(a => a.ProjectId == projectId && a.Id == model.IssueId).FirstOrDefault();
 
             if (issue == null)
             {
                 return StatusNotFound();
             }
 
-            issue.StatusId = model.PriorityId;
+            issue.StatusId = model.StatusId;
+            issue.UpdatedBy = this.CurrentUserId;
+            issue.LastUpdateDate = DateTime.UtcNow;
+            issue.ResolutionSummary = model.ResolutionSummary;
+
             DB.SaveChanges();
 
             return StatusOk();

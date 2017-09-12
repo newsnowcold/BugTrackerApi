@@ -26,8 +26,8 @@ namespace DBLayer
         public string Description { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime DateCreated { get; set; }
-        public Nullable<int> ClosedBy { get; set; }
-        public Nullable<System.DateTime> DateClosed { get; set; }
+        public Nullable<int> UpdatedBy { get; set; }
+        public Nullable<System.DateTime> LastUpdateDate { get; set; }
         public string ResolutionSummary { get; set; }
         public int ProjectId { get; set; }
         public int PriorityId { get; set; }
@@ -35,10 +35,10 @@ namespace DBLayer
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IssueAssignment> IssueAssignments { get; set; }
+        public virtual IssueStatus IssueStatus { get; set; }
+        public virtual PriorityType PriorityType { get; set; }
         public virtual Project Project { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TimeLog> TimeLogs { get; set; }
-        public virtual IssueStatus IssueStatus { get; set; }
-        public virtual PriorityType PriorityType { get; set; }
     }
 }

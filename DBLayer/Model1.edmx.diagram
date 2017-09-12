@@ -5,21 +5,25 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="89404a2a0b80454eb248c51e8ae4c3b1" Name="Diagram1" >
-        <EntityTypeShape EntityType="BugTrackerModel.AspNetRole" Width="1.5" PointX="5.75" PointY="10.5" />
-        <EntityTypeShape EntityType="BugTrackerModel.AspNetUserClaim" Width="1.5" PointX="10.25" PointY="11.5" />
-        <EntityTypeShape EntityType="BugTrackerModel.AspNetUserLogin" Width="1.5" PointX="10.25" PointY="9" />
-        <EntityTypeShape EntityType="BugTrackerModel.AspNetUser" Width="1.5" PointX="8" PointY="9.25" />
-        <EntityTypeShape EntityType="BugTrackerModel.IssueAssignment" Width="1.5" PointX="3" PointY="2.375" />
-        <EntityTypeShape EntityType="BugTrackerModel.Issue" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="BugTrackerModel.ProjectAccess" Width="1.5" PointX="6" PointY="5.25" />
-        <EntityTypeShape EntityType="BugTrackerModel.ProjectAccessType" Width="1.5" PointX="3.75" PointY="8.625" />
-        <EntityTypeShape EntityType="BugTrackerModel.Project" Width="1.5" PointX="1.5" PointY="8.5" />
-        <EntityTypeShape EntityType="BugTrackerModel.TimeLog" Width="1.5" PointX="3" PointY="5.125" />
-        <EntityTypeShape EntityType="BugTrackerModel.User" Width="1.5" PointX="0.75" PointY="5.25" />
+        <EntityTypeShape EntityType="BugTrackerModel.AspNetRole" Width="1.5" PointX="5.75" PointY="10" />
+        <EntityTypeShape EntityType="BugTrackerModel.AspNetUserClaim" Width="1.5" PointX="10.25" PointY="8.5" />
+        <EntityTypeShape EntityType="BugTrackerModel.AspNetUserLogin" Width="1.5" PointX="10.25" PointY="11.25" />
+        <EntityTypeShape EntityType="BugTrackerModel.AspNetUser" Width="1.5" PointX="8" PointY="8.75" />
+        <EntityTypeShape EntityType="BugTrackerModel.IssueAssignment" Width="1.5" PointX="5.25" PointY="2" />
+        <EntityTypeShape EntityType="BugTrackerModel.Issue" Width="1.5" PointX="3" PointY="3.875" />
+        <EntityTypeShape EntityType="BugTrackerModel.IssueStatus" Width="1.5" PointX="0.75" PointY="1.75" />
+        <EntityTypeShape EntityType="BugTrackerModel.PriorityType" Width="1.5" PointX="0.75" PointY="8.25" />
+        <EntityTypeShape EntityType="BugTrackerModel.ProjectAccess" Width="1.5" PointX="6" PointY="4.75" />
+        <EntityTypeShape EntityType="BugTrackerModel.ProjectAccessType" Width="1.5" PointX="3.75" PointY="9.125" />
+        <EntityTypeShape EntityType="BugTrackerModel.Project" Width="1.5" PointX="0.75" PointY="4.625" />
+        <EntityTypeShape EntityType="BugTrackerModel.TimeLog" Width="1.5" PointX="8.25" PointY="4.625" />
+        <EntityTypeShape EntityType="BugTrackerModel.User" Width="1.5" PointX="3" PointY="0.75" />
         <AssociationConnector Association="BugTrackerModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="BugTrackerModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="BugTrackerModel.FK_IssueAssignments_Issues" />
         <AssociationConnector Association="BugTrackerModel.FK_IssueAssignments_Users" />
+        <AssociationConnector Association="BugTrackerModel.FK_Issues_IssueStatuses" />
+        <AssociationConnector Association="BugTrackerModel.FK_Issues_PriorityTypes" />
         <AssociationConnector Association="BugTrackerModel.FK_Issues_Projects" />
         <AssociationConnector Association="BugTrackerModel.FK_TimeLogs_Issues" />
         <AssociationConnector Association="BugTrackerModel.FK_ProjectAccess_ProjectAccessTypes" />
@@ -27,10 +31,6 @@
         <AssociationConnector Association="BugTrackerModel.FK_ProjectAccess_Users" />
         <AssociationConnector Association="BugTrackerModel.FK_TimeLogs_Users" />
         <AssociationConnector Association="BugTrackerModel.AspNetUserRoles" />
-        <EntityTypeShape EntityType="BugTrackerModel.IssueStatus" Width="1.5" PointX="0.75" PointY="11.875" />
-        <EntityTypeShape EntityType="BugTrackerModel.PriorityType" Width="1.5" PointX="5.375" PointY="0.875" />
-        <AssociationConnector Association="BugTrackerModel.FK_Issues_IssueStatuses" />
-        <AssociationConnector Association="BugTrackerModel.FK_Issues_PriorityTypes" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

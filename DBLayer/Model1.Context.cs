@@ -33,13 +33,13 @@ namespace DBLayer
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<IssueAssignment> IssueAssignments { get; set; }
         public virtual DbSet<Issue> Issues { get; set; }
+        public virtual DbSet<IssueStatus> IssueStatuses { get; set; }
+        public virtual DbSet<PriorityType> PriorityTypes { get; set; }
         public virtual DbSet<ProjectAccess> ProjectAccesses { get; set; }
         public virtual DbSet<ProjectAccessType> ProjectAccessTypes { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<TimeLog> TimeLogs { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<IssueStatus> IssueStatuses { get; set; }
-        public virtual DbSet<PriorityType> PriorityTypes { get; set; }
     
         public virtual ObjectResult<GET_list_projects_Result> GET_list_projects(Nullable<int> userId)
         {
