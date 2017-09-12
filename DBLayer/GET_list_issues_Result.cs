@@ -20,5 +20,7 @@ namespace DBLayer
         public Nullable<System.DateTime> DateClosed { get; set; }
         public string ResolutionSummary { get; set; }
         public string CreatedBy { get; set; }
+        public string Status { get; set; }
+        public string Priority { get; set; }
     }
 }

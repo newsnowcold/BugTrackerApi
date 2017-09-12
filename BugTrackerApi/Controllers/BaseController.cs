@@ -71,6 +71,11 @@ namespace BugTrackerApi.Controllers
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 
+        public HttpResponseMessage StatusNotFound()
+        {
+            return Request.CreateResponse(HttpStatusCode.NotFound);
+        }
+
         public HttpResponseMessage StatusOk<T>(T arg)
         {
             return Request.CreateResponse(HttpStatusCode.OK, arg);

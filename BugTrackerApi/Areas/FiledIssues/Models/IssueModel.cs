@@ -10,7 +10,16 @@ namespace BugTrackerApi.Areas.FiledIssue.Models
     {
         [Required]
         public string Title { get; set; }
-
         public string Description { get; set; }
+
+        [Required]
+        public int PriorityId { get; set; }
+
+    }
+
+    public class UpdateIssueModel
+    {
+        [Required]
+        public int PriorityId { get; set; }
     }
 }

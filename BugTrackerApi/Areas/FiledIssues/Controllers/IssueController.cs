@@ -27,12 +27,14 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
             return StatusOk(result);
         }
 
-
         [HttpPost]
         [Route("{projectId}")]
         public async Task<HttpResponseMessage> Create(IssueModel model, int projectId)
         {
             if (!ModelState.IsValid) return this.InvalidModelState(ModelState);
+
+            var statusOpen = DB.IssueStatuses.Where(a => a.Status.ToLower().Contains("open"))
+                                .Select(a => a.Id).FirstOrDefault();
 
             DB.Issues.Add(new Issue()
             {
@@ -40,10 +42,34 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
                 Description = model.Description,
                 CreatedBy = this.CurrentUserId,
                 DateCreated = DateTime.UtcNow,
-                ProjectId = projectId
+                ProjectId = projectId,
+                PriorityId = model.PriorityId,
+                StatusId = statusOpen
             });
 
             await DB.SaveChangesAsync();
+
+            return StatusOk();
+        }
+
+        [HttpPatch]
+        [Route("{projectId}/issue/{bugId}")]
+        public async Task<HttpResponseMessage> UpdateStatus(UpdateIssueModel model, int projectId, int bugId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return InvalidModelState(ModelState);
+            }
+
+            var issue = DB.Issues.Where(a => a.PriorityId == projectId && a.Id == bugId).FirstOrDefault();
+
+            if (issue == null)
+            {
+                return StatusNotFound();
+            }
+
+            issue.StatusId = model.PriorityId;
+            DB.SaveChanges();
 
             return StatusOk();
         }

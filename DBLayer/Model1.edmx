@@ -462,10 +462,6 @@
           <FunctionImport Name="GET_list_projects" ReturnType="Collection(BugTrackerModel.GET_list_projects_Result)">
           <Parameter Name="UserId" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="GET_list_issues" ReturnType="Collection(BugTrackerModel.GET_list_issues_Result)">
-            <Parameter Name="UserId" Mode="In" Type="Int32" />
-            <Parameter Name="ProjectId" Mode="In" Type="Int32" />
-          </FunctionImport>
           <EntitySet Name="IssueStatuses" EntityType="BugTrackerModel.IssueStatus" />
           <EntitySet Name="PriorityTypes" EntityType="BugTrackerModel.PriorityType" />
           <AssociationSet Name="FK_Issues_IssueStatuses" Association="BugTrackerModel.FK_Issues_IssueStatuses">
@@ -476,6 +472,10 @@
             <End Role="PriorityType" EntitySet="PriorityTypes" />
             <End Role="Issue" EntitySet="Issues" />
           </AssociationSet>
+          <FunctionImport Name="GET_list_issues" ReturnType="Collection(BugTrackerModel.GET_list_issues_Result)">
+            <Parameter Name="UserId" Mode="In" Type="Int32" />
+            <Parameter Name="ProjectId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="AspNetRole">
           <Key>
@@ -753,15 +753,6 @@
           <Property Type="String" Name="CreatedBy" Nullable="true" MaxLength="201" />
           <Property Type="String" Name="AccessType" Nullable="true" MaxLength="100" />
         </ComplexType>
-        <ComplexType Name="GET_list_issues_Result">
-          <Property Type="Int32" Name="Id" Nullable="false" />
-          <Property Type="String" Name="Title" Nullable="false" MaxLength="150" />
-          <Property Type="String" Name="Description" Nullable="true" MaxLength="255" />
-          <Property Type="DateTime" Name="DateCreated" Nullable="false" Precision="23" />
-          <Property Type="DateTime" Name="DateClosed" Nullable="true" Precision="23" />
-          <Property Type="String" Name="ResolutionSummary" Nullable="true" MaxLength="255" />
-          <Property Type="String" Name="CreatedBy" Nullable="true" MaxLength="201" />
-        </ComplexType>
         <EntityType Name="IssueStatus">
           <Key>
             <PropertyRef Name="Id" />
@@ -804,6 +795,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <ComplexType Name="GET_list_issues_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="false" MaxLength="150" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="255" />
+          <Property Type="DateTime" Name="DateCreated" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="DateClosed" Nullable="true" Precision="23" />
+          <Property Type="String" Name="ResolutionSummary" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="CreatedBy" Nullable="true" MaxLength="201" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Priority" Nullable="false" MaxLength="100" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -955,19 +957,6 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GET_list_issues" FunctionName="BugTrackerModel.Store.GET_list_issues">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_issues_Result">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
-                <ScalarProperty Name="DateClosed" ColumnName="DateClosed" />
-                <ScalarProperty Name="ResolutionSummary" ColumnName="ResolutionSummary" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <EntitySetMapping Name="IssueStatuses">
             <EntityTypeMapping TypeName="BugTrackerModel.IssueStatus">
               <MappingFragment StoreEntitySet="IssueStatuses">
@@ -986,6 +975,21 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GET_list_issues" FunctionName="BugTrackerModel.Store.GET_list_issues">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_issues_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="DateClosed" ColumnName="DateClosed" />
+                <ScalarProperty Name="ResolutionSummary" ColumnName="ResolutionSummary" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
