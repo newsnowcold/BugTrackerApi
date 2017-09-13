@@ -80,6 +80,8 @@
           <Property Name="ProjectId" Type="int" Nullable="false" />
           <Property Name="PriorityId" Type="int" Nullable="false" />
           <Property Name="StatusId" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="IssueStatuses">
           <Key>
@@ -566,6 +568,8 @@
           <NavigationProperty Name="PriorityType" Relationship="BugTrackerModel.FK_Issues_PriorityTypes" FromRole="Issue" ToRole="PriorityType" />
           <NavigationProperty Name="Project" Relationship="BugTrackerModel.FK_Issues_Projects" FromRole="Issue" ToRole="Project" />
           <NavigationProperty Name="TimeLogs" Relationship="BugTrackerModel.FK_TimeLogs_Issues" FromRole="Issue" ToRole="TimeLog" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="IssueStatus">
           <Key>
@@ -886,6 +890,8 @@
           <EntitySetMapping Name="Issues">
             <EntityTypeMapping TypeName="BugTrackerModel.Issue">
               <MappingFragment StoreEntitySet="Issues">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
                 <ScalarProperty Name="PriorityId" ColumnName="PriorityId" />
                 <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />

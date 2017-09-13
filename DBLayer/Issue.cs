@@ -32,6 +32,8 @@ namespace DBLayer
         public int ProjectId { get; set; }
         public int PriorityId { get; set; }
         public int StatusId { get; set; }
+        public bool IsDeleted { get; set; }
+        public Nullable<System.DateTime> DeletedDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IssueAssignment> IssueAssignments { get; set; }

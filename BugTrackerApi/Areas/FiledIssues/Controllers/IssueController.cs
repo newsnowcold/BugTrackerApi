@@ -54,7 +54,7 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
 
         [HttpPatch]
         [Route("Project/{projectId}")]
-        public async Task<HttpResponseMessage> UpdateStatus(UpdateIssueModel model, int projectId)
+        public async Task<HttpResponseMessage> UpdateStatus(UpdateStatusModel model, int projectId)
         {
             if (!ModelState.IsValid)
             {
@@ -72,6 +72,49 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
             issue.UpdatedBy = this.CurrentUserId;
             issue.LastUpdateDate = DateTime.UtcNow;
             issue.ResolutionSummary = model.ResolutionSummary;
+
+            DB.SaveChanges();
+
+            return StatusOk();
+        }
+
+        [HttpPut]
+        [Route("Project/{projectId}")]
+        public async Task<HttpResponseMessage> Update(UpdateIssueModel model, int projectId)
+        {
+            if (!ModelState.IsValid) return InvalidModelState(ModelState);
+
+            var issue = DB.Issues.Where(a => a.Id == model.Id && a.ProjectId == projectId).FirstOrDefault();
+
+            if (issue == null)
+            {
+                return StatusNotFound();
+            }
+
+            issue.Title = model.Title;
+            issue.Description = model.Description;
+            issue.PriorityId = model.PriorityId;
+            issue.LastUpdateDate = DateTime.UtcNow;
+            issue.UpdatedBy = this.CurrentUserId;
+
+            await DB.SaveChangesAsync();
+
+            return StatusOk();
+        }
+
+        [HttpDelete]
+        [Route("Project/{projectId}/{issueId}")]
+        public async Task<HttpResponseMessage> Delete(int projectId, int issueId)
+        {
+            var issue = DB.Issues.Where(a => a.Id == issueId && a.ProjectId == projectId).FirstOrDefault();
+
+            if (issue == null)
+            {
+                return StatusNotFound();
+            }
+
+            issue.IsDeleted = true;
+            issue.DeletedDate = DateTime.UtcNow;
 
             DB.SaveChanges();
 
