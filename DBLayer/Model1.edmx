@@ -326,6 +326,9 @@
           <Parameter Name="UserId" Type="int" Mode="In" />
           <Parameter Name="ProjectId" Type="int" Mode="In" />
         </Function>
+        <Function Name="GET_list_projectMembers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ProjectId" Type="int" Mode="In" />
+        </Function>
         <Function Name="GET_list_projects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserId" Type="int" Mode="In" />
         </Function>
@@ -476,6 +479,9 @@
           </AssociationSet>
           <FunctionImport Name="GET_list_issues" ReturnType="Collection(BugTrackerModel.GET_list_issues_Result)">
             <Parameter Name="UserId" Mode="In" Type="Int32" />
+            <Parameter Name="ProjectId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GET_list_projectMembers" ReturnType="Collection(BugTrackerModel.GET_list_projectMembers_Result)">
             <Parameter Name="ProjectId" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
@@ -813,6 +819,11 @@
           <Property Type="Int32" Name="PriorityId" Nullable="false" />
           <Property Type="String" Name="UpdatedBy" Nullable="true" MaxLength="201" />
         </ComplexType>
+        <ComplexType Name="GET_list_projectMembers_Result">
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="201" />
+          <Property Type="String" Name="AccessType" Nullable="false" MaxLength="100" />
+          <Property Type="Boolean" Name="AllowNotification" Nullable="false" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -999,6 +1010,15 @@
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
                 <ScalarProperty Name="PriorityId" ColumnName="PriorityId" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GET_list_projectMembers" FunctionName="BugTrackerModel.Store.GET_list_projectMembers">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_projectMembers_Result">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="AccessType" ColumnName="AccessType" />
+                <ScalarProperty Name="AllowNotification" ColumnName="AllowNotification" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

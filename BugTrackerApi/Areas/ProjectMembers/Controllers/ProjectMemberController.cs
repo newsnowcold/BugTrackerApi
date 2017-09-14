@@ -17,6 +17,16 @@ namespace BugTrackerApi.Areas.ProjectUsers.Controllers
     [RoutePrefix("Project")]
     public class ProjectMemberController : BaseController
     {
+
+        [Route("{projectId}/members")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetList(int projectId)
+        {
+            var members = DB.GET_list_projectMembers(projectId);
+
+            return StatusOk(members);
+        }
+
         [Route("{projectId}/members")]
         [HttpPost]
         public async Task<HttpResponseMessage> Create(MembersModel model, int projectId)
