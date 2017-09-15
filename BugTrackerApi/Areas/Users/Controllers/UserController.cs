@@ -1,4 +1,5 @@
 ﻿using BugTrackerApi.Controllers;
+using EmailSender;
 using ErrorCatcher.ApiFilters;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,20 @@ namespace BugTrackerApi.Areas.Users.Controllers
             var users = DB.GET_list_users();
 
             return StatusOk(users);
+        }
+
+        // Send an invite email
+        [Route("Invite")]
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<HttpResponseMessage> Invite()
+        {
+            var emailService = new EmailService();
+            emailService.Subject = "Test subject";
+            emailService.Body = " Test Body";
+            emailService.Send("testnidarrel@mailinator.com", "tst ni darrel");
+
+            return StatusOk();
         }
     }
 }

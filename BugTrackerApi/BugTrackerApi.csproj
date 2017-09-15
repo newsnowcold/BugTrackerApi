@@ -413,6 +413,10 @@
       <Project>{CE921F4C-5C9C-468E-83DE-CBC7AA1D5EB8}</Project>
       <Name>DBLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EmailSender\EmailSender.csproj">
+      <Project>{5851008f-c5e1-452b-b668-cbcb9c242ef2}</Project>
+      <Name>EmailSender</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ErrorCatcher\ErrorCatcher.csproj">
       <Project>{12d51598-c874-4392-bf17-db3610f80b37}</Project>
       <Name>ErrorCatcher</Name>
