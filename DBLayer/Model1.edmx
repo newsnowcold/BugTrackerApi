@@ -145,6 +145,7 @@
           <Property Name="FirstName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="LastName" Type="nvarchar" MaxLength="100" />
           <Property Name="AllowNotification" Type="bit" Nullable="false" />
+          <Property Name="JoinedDate" Type="datetime" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
@@ -332,6 +333,7 @@
         <Function Name="GET_list_projects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserId" Type="int" Mode="In" />
         </Function>
+        <Function Name="GET_list_users" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="BugTrackerModelStoreContainer">
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
@@ -482,8 +484,9 @@
             <Parameter Name="ProjectId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_list_projectMembers" ReturnType="Collection(BugTrackerModel.GET_list_projectMembers_Result)">
-            <Parameter Name="ProjectId" Mode="In" Type="Int32" />
+          <Parameter Name="ProjectId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="GET_list_users" ReturnType="Collection(BugTrackerModel.GET_list_users_Result)" />
         </EntityContainer>
         <ComplexType Name="GET_list_projects_Result">
           <Property Type="Int32" Name="Id" Nullable="false" />
@@ -652,6 +655,7 @@
           <NavigationProperty Name="IssueAssignments" Relationship="BugTrackerModel.FK_IssueAssignments_Users" FromRole="User" ToRole="IssueAssignment" />
           <NavigationProperty Name="ProjectAccesses" Relationship="BugTrackerModel.FK_ProjectAccess_Users" FromRole="User" ToRole="ProjectAccess" />
           <NavigationProperty Name="TimeLogs" Relationship="BugTrackerModel.FK_TimeLogs_Users" FromRole="User" ToRole="TimeLog" />
+          <Property Name="JoinedDate" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Type="BugTrackerModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
@@ -824,6 +828,15 @@
           <Property Type="String" Name="AccessType" Nullable="false" MaxLength="100" />
           <Property Type="Boolean" Name="AllowNotification" Nullable="false" />
         </ComplexType>
+        <ComplexType Name="GET_list_users_Result">
+          <Property Type="Int32" Name="UserId" Nullable="false" />
+          <Property Type="String" Name="FirstName" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="256" />
+          <Property Type="Boolean" Name="EmailConfirmed" Nullable="false" />
+          <Property Type="DateTime" Name="JoinedDate" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="AllowNotification" Nullable="false" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -980,6 +993,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="BugTrackerModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="JoinedDate" ColumnName="JoinedDate" />
                 <ScalarProperty Name="AllowNotification" ColumnName="AllowNotification" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -1018,6 +1032,19 @@
               <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_projectMembers_Result">
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="AccessType" ColumnName="AccessType" />
+                <ScalarProperty Name="AllowNotification" ColumnName="AllowNotification" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GET_list_users" FunctionName="BugTrackerModel.Store.GET_list_users">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_users_Result">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="JoinedDate" ColumnName="JoinedDate" />
                 <ScalarProperty Name="AllowNotification" ColumnName="AllowNotification" />
               </ComplexTypeMapping>
             </ResultMapping>

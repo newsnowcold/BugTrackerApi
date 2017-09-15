@@ -19,7 +19,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetList()
         {
-            var users = DB.Users.ToList();
+            var users = DB.GET_list_users();
 
             return StatusOk(users);
         }

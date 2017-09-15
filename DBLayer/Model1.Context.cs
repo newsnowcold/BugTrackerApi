@@ -71,5 +71,10 @@ namespace DBLayer
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_list_projectMembers_Result>("GET_list_projectMembers", projectIdParameter);
         }
+    
+        public virtual ObjectResult<GET_list_users_Result> GET_list_users()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_list_users_Result>("GET_list_users");
+        }
     }
 }
