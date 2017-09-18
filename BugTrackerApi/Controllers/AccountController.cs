@@ -18,10 +18,13 @@ using BugTrackerApi.Providers;
 using BugTrackerApi.Results;
 using DBLayer;
 using System.Linq;
+using ErrorCatcher.ApiFilters;
+using System.Net;
 
 namespace BugTrackerApi.Controllers
 {
     [Authorize]
+    [CustomApiHandler]
     [RoutePrefix("Account")]
     public class AccountController : BaseController
     {
@@ -52,6 +55,50 @@ namespace BugTrackerApi.Controllers
         }
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
+
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("Verify/{userId}/{*token}")]
+        public async Task<HttpResponseMessage> Verify(string userId, 
+                                                      string token,
+                                                      [FromUri]string url)
+        {
+            if (userId == null || token == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+
+            IdentityResult identityResult = new IdentityResult();
+
+            try
+            {
+                string decodedToken = HttpUtility.UrlDecode(token).Replace(" ", "+");
+                identityResult = await UserManager.ConfirmEmailAsync(userId, decodedToken);
+            }
+            catch (InvalidOperationException ioe)
+            {
+                // ConfirmEmailAsync throws when the userId is not found.
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+
+
+            // CHeck if successfull
+            if (!identityResult.Succeeded)
+            {
+                var errors = identityResult.Errors.ToList();
+
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError(" ", error.ToString());
+                }
+
+                return InvalidModelState(ModelState);
+            }
+
+            //var user = await UserManager.FindByIdAsync(userId);
+            return Request.CreateResponse(HttpStatusCode.Moved, "");
+        }
 
         // GET api/Account/UserInfo
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]

@@ -250,6 +250,7 @@
     <Compile Include="Areas\ProjectMembers\Controllers\ProjectMemberController.cs" />
     <Compile Include="Areas\ProjectMembers\Models\MembersModel.cs" />
     <Compile Include="Areas\Users\Controllers\UserController.cs" />
+    <Compile Include="Areas\Users\Models\InviteUserModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ValueController.cs" />
@@ -262,6 +263,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
+    <Compile Include="Services\LocalFileService.cs" />
     <Compile Include="Services\UserManagerService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -330,6 +332,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tooltip.min.css" />
+    <Content Include="EmailTemplates\InviteUserEmailTemplate.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -398,7 +401,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\PriorityTypes\Models\" />
     <Folder Include="Areas\Statuses\Models\" />
-    <Folder Include="Areas\Users\Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

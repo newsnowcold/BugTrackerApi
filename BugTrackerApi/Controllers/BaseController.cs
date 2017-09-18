@@ -39,6 +39,7 @@ namespace BugTrackerApi.Controllers
             }
         }
 
+        // API RESPONSE
         public HttpResponseMessage InvalidModelState(ModelStateDictionary modelState)
         {
             List<Error> errors = new List<Error>();
@@ -81,6 +82,14 @@ namespace BugTrackerApi.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, arg);
         }
 
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager;
+            }
+        }
 
         public string CurrentAspNetUserId
         {
