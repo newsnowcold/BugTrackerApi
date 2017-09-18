@@ -250,6 +250,7 @@
     <Compile Include="Areas\ProjectMembers\Controllers\ProjectMemberController.cs" />
     <Compile Include="Areas\ProjectMembers\Models\MembersModel.cs" />
     <Compile Include="Areas\Users\Controllers\UserController.cs" />
+    <Compile Include="Areas\Users\Models\CompleteRegistrationModel.cs" />
     <Compile Include="Areas\Users\Models\InviteUserModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />

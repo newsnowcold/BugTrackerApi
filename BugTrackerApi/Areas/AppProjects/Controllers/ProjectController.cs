@@ -51,18 +51,18 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
                 {
                     try
                     {
-                        DB.Projects.Add(newProj);
+                        context.Projects.Add(newProj);
 
-                        await DB.SaveChangesAsync();
+                        await context.SaveChangesAsync();
 
-                        DB.ProjectAccesses.Add(new ProjectAccess()
+                        context.ProjectAccesses.Add(new ProjectAccess()
                         {
                             UserId = this.CurrentUserId,
                             ProjectId = newProj.Id,
                             AccessTypeId = 1
                         });
 
-                        await DB.SaveChangesAsync();
+                        await context.SaveChangesAsync();
 
                         dbContextTransaction.Commit();
                     }
@@ -70,7 +70,7 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
                     {
                         dbContextTransaction.Rollback();
 
-                        throw new Exception("Error on edmx");
+                        throw new Exception("Error while creating entry", e);
                     }
                 }
             }
