@@ -45,9 +45,11 @@ namespace BugTrackerApi.Areas.Users.Controllers
             }
 
             var newUser = await UserManager.FindByEmailAsync(model.EmailAddress.Trim());
-            var token = await UserManager.GenerateEmailConfirmationTokenAsync(this.CurrentAspNetUserId);
+            var token = "";
+
             if (newUser != null)
             {
+                token = await UserManager.GenerateEmailConfirmationTokenAsync(newUser.Id);
                 SendInviteEmail(model.EmailAddress,
                                 "",
                                 newUser.Id,
@@ -63,35 +65,47 @@ namespace BugTrackerApi.Areas.Users.Controllers
 
                 var newAddedUser = await UserManager.FindByEmailAsync(model.EmailAddress.Trim());
 
+                token = await UserManager.GenerateEmailConfirmationTokenAsync(newAddedUser.Id);
                 SendInviteEmail(model.EmailAddress,
                                 "",
                                 newAddedUser.Id,
                                 token,
-                                redirectUrl);
+                                redirectUrl,
+                                generatedPass);
             }
 
             return StatusOk();
         }
 
-        private void SendInviteEmail(string recipientEmail, string recipientName, string userId, string token, string redirectUrl)
+        private void SendInviteEmail(string recipientEmail, 
+                                     string recipientName, 
+                                     string userId, 
+                                     string token,
+                                     string redirectUrl,
+                                     string defaultPasword = "xxxx")
         {
             var appDomain = ConfigurationManager.AppSettings["AppDomain"];
             var inviteEmailUrl = $"{appDomain}/verify/{userId}/{token}?url={redirectUrl}";
 
+
+            // Get  Email Content 
+            var htmlContent = InviteEmailContent(inviteEmailUrl);
+            htmlContent = htmlContent
+                .Replace("{{AcceptLink}}", redirectUrl)
+                .Replace("{{DefaultUserName}}", recipientEmail)
+                .Replace("{{DefaultPassword}}", defaultPasword);
+
             var emailService = new EmailService();
             emailService.Subject = "Test subject";
-            emailService.Body = InviteEmailContent(inviteEmailUrl);
-            emailService.Send(recipientEmail, recipientName);
+            emailService.Body = htmlContent;
+            emailService.Send(recipientEmail, recipientName, true);
         }
 
         private string InviteEmailContent(string redirectUrl)
         {
-            var file = new LocalFileService("~EmailTemplates/InviteUserEmailTemplate.html");
+            var file = new LocalFileService("\\EmailTemplates\\InviteUserEmailTemplate.html");
 
-            var template = file.GetStringOfFile;
-            template.Replace("{{AcceptLink}}", redirectUrl);
-
-            return template;
+            return file.GetStringOfFile;
         }
     }
 }

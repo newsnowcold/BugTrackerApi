@@ -28,7 +28,7 @@ namespace BugTrackerApi.Services
             var appDomain = System.AppDomain.CurrentDomain;
             var basePath = appDomain.RelativeSearchPath ?? appDomain.BaseDirectory;
 
-            return Path.Combine(basePath, path);
+            return $"{basePath}{path}";
         }
     }
 }

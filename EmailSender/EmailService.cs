@@ -32,7 +32,7 @@ namespace EmailSender
             this._fromName = fromName;
         }
 
-        public void Send(string toEmail, string toName)
+        public void Send(string toEmail, string toName, bool isHtml)
         {
             var fromAddress = new MailAddress(this._fromEmail, this._fromName);
             var toAddress = new MailAddress(toEmail, toName);
@@ -45,11 +45,15 @@ namespace EmailSender
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 Credentials = new NetworkCredential(fromAddress.Address, this._fromPassword),
                 Timeout = 20000
+                
             };
+
+
             using (var message = new MailMessage(fromAddress, toAddress)
             {
                 Subject = Subject,
-                Body = Body
+                Body = Body,
+                IsBodyHtml = isHtml
             })
             {
                 smtp.Send(message);
