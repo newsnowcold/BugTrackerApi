@@ -125,6 +125,9 @@
           <Property Name="DateCreated" Type="datetime" Nullable="false" />
           <Property Name="DateModified" Type="datetime" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="DeletedDate" Type="datetime" />
+          <Property Name="DeletedBy" Type="int" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="TimeLogs">
           <Key>
@@ -485,7 +488,7 @@
           </FunctionImport>
           <FunctionImport Name="GET_list_users" ReturnType="Collection(BugTrackerModel.GET_list_users_Result)" />
           <FunctionImport Name="GET_list_projectMembers" ReturnType="Collection(BugTrackerModel.GET_list_projectMembers_Result)">
-            <Parameter Name="ProjectId" Mode="In" Type="Int32" />
+          <Parameter Name="ProjectId" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GET_list_projects_Result">
@@ -630,6 +633,9 @@
           <Property Name="CreatedBy" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Issues" Relationship="BugTrackerModel.FK_Issues_Projects" FromRole="Project" ToRole="Issue" />
           <NavigationProperty Name="ProjectAccesses" Relationship="BugTrackerModel.FK_ProjectAccess_Projects" FromRole="Project" ToRole="ProjectAccess" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <Property Name="DeletedBy" Type="Int32" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="TimeLog">
           <Key>
@@ -970,6 +976,9 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="BugTrackerModel.Project">
               <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="DeletedBy" ColumnName="DeletedBy" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="DateModified" ColumnName="DateModified" />
                 <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />

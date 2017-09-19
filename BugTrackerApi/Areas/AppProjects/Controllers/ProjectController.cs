@@ -101,5 +101,29 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
             return StatusOk();
         }
 
+        [Route("{projectId}")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> Delete(int projectId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return InvalidModelState(ModelState);
+            }
+
+            var project = DB.Projects.Where(a => a.Id == projectId).FirstOrDefault();
+
+            if (project == null)
+            {
+                return StatusNotFound();
+            }
+
+            project.IsDeleted = true;
+            project.DeletedDate = DateTime.UtcNow;
+            project.DeletedBy = this.CurrentUserId;
+            await DB.SaveChangesAsync();
+
+            return StatusOk();
+        }
+
     }
 }
