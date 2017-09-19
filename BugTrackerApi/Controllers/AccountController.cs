@@ -60,13 +60,13 @@ namespace BugTrackerApi.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Route("Verify/{userId}/{*token}")]
-        public async Task<HttpResponseMessage> Verify(string userId, 
+        public async Task<IHttpActionResult> Verify(string userId, 
                                                       string token,
                                                       [FromUri]string url)
         {
             if (userId == null || token == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
 
             IdentityResult identityResult = new IdentityResult();
@@ -75,11 +75,12 @@ namespace BugTrackerApi.Controllers
             {
                 string decodedToken = HttpUtility.UrlDecode(token).Replace(" ", "+");
                 identityResult = await UserManager.ConfirmEmailAsync(userId, decodedToken);
+
             }
             catch (InvalidOperationException ioe)
             {
                 // ConfirmEmailAsync throws when the userId is not found.
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
 
 
@@ -93,11 +94,11 @@ namespace BugTrackerApi.Controllers
                     ModelState.AddModelError(" ", error.ToString());
                 }
 
-                return InvalidModelState(ModelState);
+                return BadRequest(ModelState);
             }
 
             //var user = await UserManager.FindByIdAsync(userId);
-            return Request.CreateResponse(HttpStatusCode.Moved, "");
+            return Redirect(url);
         }
 
         // GET api/Account/UserInfo

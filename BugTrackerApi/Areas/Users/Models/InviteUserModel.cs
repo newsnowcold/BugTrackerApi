@@ -12,4 +12,10 @@ namespace BugTrackerApi.Areas.Users.Models
         [Required]
         public string EmailAddress { get; set; }
     }
+
+    public class RegistrationCompletedModel
+    {
+        public int UserId { get; set; }
+        public string UserName { get; set; }
+    }
 }

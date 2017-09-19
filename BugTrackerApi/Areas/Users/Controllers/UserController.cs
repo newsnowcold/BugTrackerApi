@@ -44,6 +44,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
             }
 
             var user = new User();
+            var aspNetUser = new AspNetUser();
 
             using (var context = DB)
             {
@@ -58,7 +59,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
                         context.Users.Add(user);
                         await DB.SaveChangesAsync();
 
-                        var aspNetUser = context.AspNetUsers.Where(a => a.Id == this.CurrentAspNetUserId).FirstOrDefault();
+                        aspNetUser = context.AspNetUsers.Where(a => a.Id == this.CurrentAspNetUserId).FirstOrDefault();
 
                         if (aspNetUser == null)
                         {
@@ -79,7 +80,10 @@ namespace BugTrackerApi.Areas.Users.Controllers
                 }
             }
 
-            return StatusOk();
+            return StatusOk(new RegistrationCompletedModel() {
+                UserId = user.Id,
+                UserName = aspNetUser.Email
+            });
 
         }
 
@@ -140,13 +144,13 @@ namespace BugTrackerApi.Areas.Users.Controllers
                                      string defaultPasword = "")
         {
             var appDomain = ConfigurationManager.AppSettings["AppDomain"];
-            var inviteEmailUrl = $"{appDomain}/verify/{userId}/{token}?url={redirectUrl}";
+            var inviteEmailUrl = $"{appDomain}/account/verify/{userId}/{token}?url={redirectUrl}";
 
 
             // Get  Email Content 
-            var htmlContent = InviteEmailContent(inviteEmailUrl);
+            var htmlContent = InviteEmailContent();
             htmlContent = htmlContent
-                .Replace("{{AcceptLink}}", redirectUrl)
+                .Replace("{{AcceptLink}}", inviteEmailUrl)
                 .Replace("{{DefaultUserName}}", recipientEmail)
                 .Replace("{{DefaultPassword}}", defaultPasword);
 
@@ -156,7 +160,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
             emailService.Send(recipientEmail, recipientName, true);
         }
 
-        private string InviteEmailContent(string redirectUrl)
+        private string InviteEmailContent()
         {
             var file = new LocalFileService("\\EmailTemplates\\InviteUserEmailTemplate.html");
 
