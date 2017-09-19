@@ -78,5 +78,28 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
             return StatusOk(newProj);
         }
 
+        [Route("{projectId}")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> Update(ProjectModel model, int projectId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return InvalidModelState(ModelState);
+            }
+
+            var project = DB.Projects.Where(a => a.Id == projectId).FirstOrDefault();
+
+            if (project == null)
+            {
+                return StatusNotFound();
+            }
+
+            project.Name = model.Name;
+            project.Description = model.Description;
+            await DB.SaveChangesAsync();
+
+            return StatusOk();
+        }
+
     }
 }
