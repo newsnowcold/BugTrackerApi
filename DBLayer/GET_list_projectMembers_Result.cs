@@ -13,6 +13,7 @@ namespace DBLayer
     
     public partial class GET_list_projectMembers_Result
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string AccessType { get; set; }
         public bool AllowNotification { get; set; }
