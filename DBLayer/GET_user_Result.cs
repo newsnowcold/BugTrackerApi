@@ -11,7 +11,7 @@ namespace DBLayer
 {
     using System;
     
-    public partial class GET_list_users_Result
+    public partial class GET_user_Result
     {
         public int UserId { get; set; }
         public string FirstName { get; set; }

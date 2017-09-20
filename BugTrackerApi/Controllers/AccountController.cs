@@ -64,11 +64,21 @@ namespace BugTrackerApi.Controllers
 
 
         [HttpGet]
+        [Authorize]
+        [Route("")]
+        public async Task<IHttpActionResult> UserDetails()
+        {
+            var user = DB.GET_user(this.CurrentUserId);
+
+            return Ok(user);
+        }
+
+        [HttpGet]
         [AllowAnonymous]
         [Route("Verify/{userId}/{*token}")]
         public async Task<IHttpActionResult> Verify(string userId,
-                                                      string token,
-                                                      [FromUri]string url)
+                                                    string token,
+                                                    [FromUri]string url)
         {
             if (userId == null || token == null)
             {

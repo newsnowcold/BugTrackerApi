@@ -26,6 +26,10 @@ namespace BugTrackerApi.Areas.Users.Controllers
     [RoutePrefix("User")]
     public class UserController : BaseController
     {
+        // Application Roles
+        private string _roleSuperAdmin = "SuperAdmin";
+        private string _roleAdmin = "Admin";
+        private string _roleUser = "User";
 
         [Route("")]
         [HttpGet]
@@ -112,6 +116,27 @@ namespace BugTrackerApi.Areas.Users.Controllers
                                 newUser.Id,
                                 token,
                                 redirectUrl);
+
+                // check if it is deleted
+                var deletedUser = DB.Users.Where(a => a.Id == newUser.UserId && a.IsDeleted == true).FirstOrDefault();
+
+                if (deletedUser != null)
+                {
+                    deletedUser.IsDeleted = false;
+                    await DB.SaveChangesAsync();
+
+                    if (UserManager.IsInRole(newUser.Id, this._roleAdmin))
+                    {
+                        UserManager.RemoveFromRole(newUser.Id, this._roleAdmin);
+                    }
+
+                    if (UserManager.IsInRole(newUser.Id, this._roleSuperAdmin))
+                    {
+                        UserManager.RemoveFromRole(newUser.Id, this._roleSuperAdmin);
+                    }
+
+                    UserManager.AddToRole(newUser.Id, this._roleUser);
+                }
             }
             else
             {
@@ -129,6 +154,8 @@ namespace BugTrackerApi.Areas.Users.Controllers
                                 token,
                                 redirectUrl,
                                 generatedPass);
+
+                UserManager.AddToRole(newAddedUser.Id, this._roleUser);
             }
 
             return StatusOk();
