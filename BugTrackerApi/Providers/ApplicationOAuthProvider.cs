@@ -10,6 +10,7 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using BugTrackerApi.Models;
+using DBLayer;
 
 namespace BugTrackerApi.Providers
 {
@@ -37,6 +38,19 @@ namespace BugTrackerApi.Providers
             {
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
                 return;
+            }
+            else
+            {
+                var DB = new BugTrackerEntities();
+
+                var appUser = DB.Users.Where(a => a.Id == user.UserId).FirstOrDefault();
+
+                if (appUser != null && appUser.IsDeleted)
+                {
+                    context.SetError("invalid_grant", "This account is removed or has no access to the system.");
+                    return;
+                }
+
             }
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,

@@ -1,4 +1,5 @@
-﻿using BugTrackerApi.Controllers;
+﻿using BugTrackerApi.ApiAttributes;
+using BugTrackerApi.Controllers;
 using ErrorCatcher.ApiFilters;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace BugTrackerApi.Areas.IssueStatuses.Controllers
 {
     [CustomApiHandler]
     [Authorize]
+    [ValidateUsers]
     [RoutePrefix("Status")]
     public class StatusController : BaseController
     {

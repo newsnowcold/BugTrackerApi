@@ -1,4 +1,5 @@
-﻿using BugTrackerApi.Areas.FiledIssue.Models;
+﻿using BugTrackerApi.ApiAttributes;
+using BugTrackerApi.Areas.FiledIssue.Models;
 using BugTrackerApi.Controllers;
 using DBLayer;
 using ErrorCatcher.ApiFilters;
@@ -14,6 +15,7 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
 {
     [CustomApiHandler]
     [Authorize]
+    [ValidateUsers]
     [RoutePrefix("Issue")]
     public class IssueController : BaseController
     {

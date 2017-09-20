@@ -1,4 +1,5 @@
-﻿using BugTrackerApi.Areas.Users.Models;
+﻿using BugTrackerApi.ApiAttributes;
+using BugTrackerApi.Areas.Users.Models;
 using BugTrackerApi.Controllers;
 using BugTrackerApi.Models;
 using BugTrackerApi.Services;
@@ -21,6 +22,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
 {
     [CustomApiHandler]
     [Authorize]
+    [ValidateUsers]
     [RoutePrefix("User")]
     public class UserController : BaseController
     {

@@ -20,6 +20,7 @@ using DBLayer;
 using System.Linq;
 using ErrorCatcher.ApiFilters;
 using System.Net;
+using System.Data.Entity.Validation;
 
 namespace BugTrackerApi.Controllers
 {
@@ -388,40 +389,58 @@ namespace BugTrackerApi.Controllers
                 return Unauthorized();
             }
 
-            var user = DB.Users.Add(new User()
+            using (var context = DB)
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                JoinedDate = DateTime.UtcNow
-            });
-
-            await DB.SaveChangesAsync();
-
-            var aspUser = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-
-            IdentityResult result = await UserManager.CreateAsync(aspUser, model.Password);
-
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
-            else
-            {
-                if (await this.SetUpUserRoles())
+                using (var dbTrans = context.Database.BeginTransaction())
                 {
-                    var newAspUser = DB.AspNetUsers.Where(a => a.Id == aspUser.Id).First();
+                    try
+                    {
+                        var user = context.Users.Add(new User()
+                        {
+                            FirstName = model.FirstName,
+                            LastName = model.LastName,
+                            JoinedDate = DateTime.UtcNow
+                        });
 
-                    newAspUser.UserId = user.Id;
-                    newAspUser.EmailConfirmed = true;
-                    await DB.SaveChangesAsync();
+                        //await context.SaveChangesAsync();
 
-                    UserManager.AddToRole(newAspUser.Id, this._roleSuperAdmin);
-                }
-                else
-                {
-                    throw new Exception("There is a problem setting up the roles.");
+                        var aspUser = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+
+                        IdentityResult result = await UserManager.CreateAsync(aspUser, model.Password);
+
+                        if (!result.Succeeded)
+                        {
+                            return GetErrorResult(result);
+                        }
+                        else
+                        {
+                            if (await this.SetUpUserRoles(context))
+                            {
+                                var newAspUser = context.AspNetUsers.Where(a => a.Id == aspUser.Id).First();
+
+                                newAspUser.UserId = user.Id;
+                                newAspUser.EmailConfirmed = true;
+                                
+
+                                UserManager.AddToRole(newAspUser.Id, this._roleSuperAdmin);
+                            }
+                            else
+                            {
+                                throw new Exception("There is a problem setting up the roles.");
+                            }
+                        }
+                        await context.SaveChangesAsync();
+                        dbTrans.Commit();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        dbTrans.Rollback();
+
+                        throw new Exception("Error while creating entry", e);
+                    }
                 }
             }
+
 
             return Ok();
         }
@@ -575,9 +594,9 @@ namespace BugTrackerApi.Controllers
             }
         }
 
-        private async Task<bool> SetUpUserRoles()
+        private async Task<bool> SetUpUserRoles(BugTrackerEntities context)
         {
-            var roles = DB.AspNetRoles.ToList();
+            var roles = context.AspNetRoles.ToList();
 
             var rSuperAdmin = roles.Where(a => a.Name == this._roleSuperAdmin).FirstOrDefault();
             var rAdmin = roles.Where(a => a.Name == this._roleAdmin).FirstOrDefault();
@@ -586,7 +605,7 @@ namespace BugTrackerApi.Controllers
             // Setup super admin role
             if (rSuperAdmin == null)
             {
-                DB.AspNetRoles.Add(new AspNetRole()
+                context.AspNetRoles.Add(new AspNetRole()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = this._roleSuperAdmin
@@ -596,7 +615,7 @@ namespace BugTrackerApi.Controllers
             // Setup admin role
             if (rAdmin == null)
             {
-                DB.AspNetRoles.Add(new AspNetRole()
+                context.AspNetRoles.Add(new AspNetRole()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = this._roleAdmin
@@ -606,12 +625,14 @@ namespace BugTrackerApi.Controllers
             // Setup user role
             if (rUser == null)
             {
-                DB.AspNetRoles.Add(new AspNetRole()
+                context.AspNetRoles.Add(new AspNetRole()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = this._roleUser
                 });
             }
+
+            await context.SaveChangesAsync();
 
             return true;
         }

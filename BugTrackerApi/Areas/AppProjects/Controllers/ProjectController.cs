@@ -1,4 +1,5 @@
-﻿using BugTrackerApi.Areas.AppProjects.Models;
+﻿using BugTrackerApi.ApiAttributes;
+using BugTrackerApi.Areas.AppProjects.Models;
 using BugTrackerApi.Controllers;
 using DBLayer;
 using ErrorCatcher.ApiFilters;
@@ -15,6 +16,7 @@ using System.Web.Http;
 namespace BugTrackerApi.Areas.AppProjects.Controllers
 {
     [CustomApiHandler]
+    [ValidateUsers]
     [RoutePrefix("Project")]
     [Authorize]
     public class ProjectController : BaseController
