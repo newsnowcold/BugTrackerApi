@@ -31,6 +31,11 @@ namespace BugTrackerApi.Controllers
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
 
+        // Application Roles
+        private string _roleSuperAdmin = "SuperAdmin";
+        private string _roleAdmin = "Admin";
+        private string _roleUser = "User";
+
         public AccountController()
         {
         }
@@ -60,7 +65,7 @@ namespace BugTrackerApi.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Route("Verify/{userId}/{*token}")]
-        public async Task<IHttpActionResult> Verify(string userId, 
+        public async Task<IHttpActionResult> Verify(string userId,
                                                       string token,
                                                       [FromUri]string url)
         {
@@ -386,34 +391,36 @@ namespace BugTrackerApi.Controllers
             var user = DB.Users.Add(new User()
             {
                 FirstName = model.FirstName,
-                LastName = model.LastName
+                LastName = model.LastName,
+                JoinedDate = DateTime.UtcNow
             });
 
             await DB.SaveChangesAsync();
 
-            try
+            var aspUser = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+
+            IdentityResult result = await UserManager.CreateAsync(aspUser, model.Password);
+
+            if (!result.Succeeded)
             {
-                var aspUser = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-
-                IdentityResult result = await UserManager.CreateAsync(aspUser, model.Password);
-
-                if (!result.Succeeded)
-                {
-                    return GetErrorResult(result);
-                }
-                else
+                return GetErrorResult(result);
+            }
+            else
+            {
+                if (await this.SetUpUserRoles())
                 {
                     var newAspUser = DB.AspNetUsers.Where(a => a.Id == aspUser.Id).First();
 
                     newAspUser.UserId = user.Id;
+                    newAspUser.EmailConfirmed = true;
                     await DB.SaveChangesAsync();
+
+                    UserManager.AddToRole(newAspUser.Id, this._roleSuperAdmin);
                 }
-
-            }
-            catch (Exception e)
-            {
-
-                throw;
+                else
+                {
+                    throw new Exception("There is a problem setting up the roles.");
+                }
             }
 
             return Ok();
@@ -566,6 +573,47 @@ namespace BugTrackerApi.Controllers
                 _random.GetBytes(data);
                 return HttpServerUtility.UrlTokenEncode(data);
             }
+        }
+
+        private async Task<bool> SetUpUserRoles()
+        {
+            var roles = DB.AspNetRoles.ToList();
+
+            var rSuperAdmin = roles.Where(a => a.Name == this._roleSuperAdmin).FirstOrDefault();
+            var rAdmin = roles.Where(a => a.Name == this._roleAdmin).FirstOrDefault();
+            var rUser = roles.Where(a => a.Name == this._roleUser).FirstOrDefault();
+
+            // Setup super admin role
+            if (rSuperAdmin == null)
+            {
+                DB.AspNetRoles.Add(new AspNetRole()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = this._roleSuperAdmin
+                });
+            }
+
+            // Setup admin role
+            if (rAdmin == null)
+            {
+                DB.AspNetRoles.Add(new AspNetRole()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = this._roleAdmin
+                });
+            }
+
+            // Setup user role
+            if (rUser == null)
+            {
+                DB.AspNetRoles.Add(new AspNetRole()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = this._roleUser
+                });
+            }
+
+            return true;
         }
 
         #endregion

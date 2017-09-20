@@ -65,7 +65,7 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
 
             if (issue == null)
             {
-                return StatusNotFound();
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Can't find issue/bug ticket.");
             }
 
             issue.StatusId = model.StatusId;
@@ -88,7 +88,7 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
 
             if (issue == null)
             {
-                return StatusNotFound();
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Can't find issue/bug ticket.");
             }
 
             issue.Title = model.Title;
@@ -110,11 +110,12 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
 
             if (issue == null)
             {
-                return StatusNotFound();
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Can't find issue/bug ticket.");
             }
 
             issue.IsDeleted = true;
             issue.DeletedDate = DateTime.UtcNow;
+            issue.DeletedBy = this.CurrentUserId;
 
             DB.SaveChanges();
 

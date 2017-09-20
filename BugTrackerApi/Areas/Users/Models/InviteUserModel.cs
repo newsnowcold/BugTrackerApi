@@ -8,7 +8,7 @@ namespace BugTrackerApi.Areas.Users.Models
 {
     public class InviteUserModel
     {
-        [DataType(DataType.EmailAddress)]
+        [EmailAddress]
         [Required]
         public string EmailAddress { get; set; }
     }

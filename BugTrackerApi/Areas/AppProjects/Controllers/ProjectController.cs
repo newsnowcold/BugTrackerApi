@@ -91,7 +91,7 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
 
             if (project == null)
             {
-                return StatusNotFound();
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Can't find project.");
             }
 
             project.Name = model.Name;
@@ -114,7 +114,7 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
 
             if (project == null)
             {
-                return StatusNotFound();
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Can't find project.");
             }
 
             project.IsDeleted = true;

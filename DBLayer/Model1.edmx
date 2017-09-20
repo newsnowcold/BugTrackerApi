@@ -82,6 +82,7 @@
           <Property Name="StatusId" Type="int" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
           <Property Name="DeletedDate" Type="datetime" />
+          <Property Name="DeletedBy" Type="int" />
         </EntityType>
         <EntityType Name="IssueStatuses">
           <Key>
@@ -149,6 +150,9 @@
           <Property Name="LastName" Type="nvarchar" MaxLength="100" />
           <Property Name="AllowNotification" Type="bit" Nullable="false" />
           <Property Name="JoinedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="datetime" />
+          <Property Name="DeletedBy" Type="int" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
@@ -582,6 +586,7 @@
           <NavigationProperty Name="TimeLogs" Relationship="BugTrackerModel.FK_TimeLogs_Issues" FromRole="Issue" ToRole="TimeLog" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
           <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <Property Name="DeletedBy" Type="Int32" />
         </EntityType>
         <EntityType Name="IssueStatus">
           <Key>
@@ -662,6 +667,9 @@
           <NavigationProperty Name="ProjectAccesses" Relationship="BugTrackerModel.FK_ProjectAccess_Users" FromRole="User" ToRole="ProjectAccess" />
           <NavigationProperty Name="TimeLogs" Relationship="BugTrackerModel.FK_TimeLogs_Users" FromRole="User" ToRole="TimeLog" />
           <Property Name="JoinedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <Property Name="DeletedBy" Type="Int32" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Type="BugTrackerModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
@@ -921,6 +929,7 @@
           <EntitySetMapping Name="Issues">
             <EntityTypeMapping TypeName="BugTrackerModel.Issue">
               <MappingFragment StoreEntitySet="Issues">
+                <ScalarProperty Name="DeletedBy" ColumnName="DeletedBy" />
                 <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
@@ -1003,6 +1012,9 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="BugTrackerModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="DeletedBy" ColumnName="DeletedBy" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="JoinedDate" ColumnName="JoinedDate" />
                 <ScalarProperty Name="AllowNotification" ColumnName="AllowNotification" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />

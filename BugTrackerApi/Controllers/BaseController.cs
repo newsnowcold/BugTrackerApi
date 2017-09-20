@@ -103,8 +103,8 @@ namespace BugTrackerApi.Controllers
         {
             get
             {
-                return this._userManager.FindById(CurrentAspNetUserId).UserId;
-                //return 1;
+                var aspUser = this._userManager.FindById(CurrentAspNetUserId);
+                return (aspUser != null) ? aspUser.UserId : 0;
             }
         }
 

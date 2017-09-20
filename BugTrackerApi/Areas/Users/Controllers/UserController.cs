@@ -35,7 +35,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
         }
 
         [Route("complete-registration")]
-        [Authorize]
+        [HttpPost]
         public async Task<HttpResponseMessage> CompleteRegistration(CompleteRegistrationModel model)
         {
             if (!ModelState.IsValid)
@@ -132,6 +132,24 @@ namespace BugTrackerApi.Areas.Users.Controllers
             return StatusOk();
         }
 
+        [Route("{userId}")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> Delete(int userId)
+        {
+            var user = DB.Users.Where(a => a.Id == userId).FirstOrDefault();
+
+            if (user == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Can't find user");
+            }
+
+            user.IsDeleted = true;
+            user.DeletedDate = DateTime.UtcNow;
+            user.DeletedBy = this.CurrentUserId;
+            await DB.SaveChangesAsync();
+
+            return StatusOk();
+        }
 
 
 
