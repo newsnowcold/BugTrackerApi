@@ -121,7 +121,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
 
         // Send an invite email
         [Route("Invite")]
-        [Authorize(Roles = "Admin, SuperAdmin")]
+        [CustomAuthorization(Roles = "Admin, SuperAdmin")]
         [HttpPost]
         public async Task<HttpResponseMessage> Invite(InviteUserModel model, [FromUri]string redirectUrl)
         {
@@ -188,7 +188,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
         }
 
         [Route("{userId}")]
-        [Authorize(Roles = "Admin, SuperAdmin")]
+        [CustomAuthorization(Roles = "Admin, SuperAdmin")]
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(int userId)
         {

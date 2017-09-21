@@ -31,7 +31,7 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
         }
 
         [Route("")]
-        [Authorize(Roles = "Admin, SuperAdmin")]
+        [CustomAuthorization(Roles = "Admin, SuperAdmin")]
         [HttpPost]
         public async Task<HttpResponseMessage> Create(ProjectModel model)
         {
@@ -82,7 +82,7 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
         }
 
         [Route("{projectId}")]
-        [Authorize(Roles = "Admin, SuperAdmin")]
+        [CustomAuthorization(Roles = "Admin, SuperAdmin")]
         [HttpPut]
         public async Task<HttpResponseMessage> Update(ProjectModel model, int projectId)
         {
@@ -106,7 +106,7 @@ namespace BugTrackerApi.Areas.AppProjects.Controllers
         }
 
         [Route("{projectId}")]
-        [Authorize(Roles = "Admin, SuperAdmin")]
+        [CustomAuthorization(Roles = "Admin, SuperAdmin")]
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(int projectId)
         {
