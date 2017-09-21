@@ -31,6 +31,7 @@ namespace BugTrackerApi.Areas.ProjectUsers.Controllers
         }
 
         [Route("{projectId}/members")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpPost]
         public async Task<HttpResponseMessage> Create(MembersModel model, int projectId)
         {

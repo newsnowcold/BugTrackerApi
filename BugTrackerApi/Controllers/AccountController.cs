@@ -68,10 +68,11 @@ namespace BugTrackerApi.Controllers
         [Route("")]
         public async Task<IHttpActionResult> UserDetails()
         {
-            var user = DB.GET_user(this.CurrentUserId);
+            var user = DB.GET_user(this.CurrentUserId).First();
 
             return Ok(user);
         }
+
 
         [HttpGet]
         [AllowAnonymous]
@@ -180,7 +181,7 @@ namespace BugTrackerApi.Controllers
             };
         }
 
-        // POST api/Account/ChangePassword
+        // POST Account/ChangePassword
         [Route("ChangePassword")]
         public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
         {

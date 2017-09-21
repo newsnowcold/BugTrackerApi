@@ -86,7 +86,8 @@ namespace BugTrackerApi.Areas.Users.Controllers
                 }
             }
 
-            return StatusOk(new RegistrationCompletedModel() {
+            return StatusOk(new RegistrationCompletedModel()
+            {
                 UserId = user.Id,
                 UserName = aspNetUser.Email
             });
@@ -94,8 +95,33 @@ namespace BugTrackerApi.Areas.Users.Controllers
         }
 
 
+        [Route("{userId}")]
+        [HttpPatch]
+        public async Task<HttpResponseMessage> UpdateProfile(UserProfileModel model, int userId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return InvalidModelState(ModelState);
+            }
+
+            var user = DB.Users.Where(a => a.Id == userId).FirstOrDefault();
+
+            if (user == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Can't find user.");
+            }
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            await DB.SaveChangesAsync();
+
+            return StatusOk();
+        }
+
+
         // Send an invite email
         [Route("Invite")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpPost]
         public async Task<HttpResponseMessage> Invite(InviteUserModel model, [FromUri]string redirectUrl)
         {
@@ -162,6 +188,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
         }
 
         [Route("{userId}")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(int userId)
         {
@@ -170,6 +197,24 @@ namespace BugTrackerApi.Areas.Users.Controllers
             if (user == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Can't find user");
+            }
+
+            // User can't remove it self
+            if (user.Id == this.CurrentUserId)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Can't delete your self.");
+            }
+
+
+            // Superadmins can only removed by another superadmins
+            if (!UserManager.IsInRole(CurrentAspNetUserId, _roleSuperAdmin))
+            {
+                var aspNetUser = DB.AspNetUsers.Where(a => a.UserId == user.Id).First();
+
+                if (UserManager.IsInRole(aspNetUser.Id, _roleSuperAdmin))
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "You don't have enough rights to delete a super admin.");
+                }
             }
 
             user.IsDeleted = true;

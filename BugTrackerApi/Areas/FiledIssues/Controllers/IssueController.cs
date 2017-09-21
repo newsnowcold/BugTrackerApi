@@ -105,6 +105,7 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [Route("Project/{projectId}/{issueId}")]
         public async Task<HttpResponseMessage> Delete(int projectId, int issueId)
         {
