@@ -13,6 +13,13 @@ namespace BugTrackerApi.Models
         public string ExternalAccessToken { get; set; }
     }
 
+    public class CustomRequestPassword
+    {
+        [EmailAddress]
+        [Required]
+        public string Email { get; set; }
+    }
+
     public class ChangePasswordBindingModel
     {
         [Required]
@@ -30,6 +37,26 @@ namespace BugTrackerApi.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class CustomChangePasswordBindingModel
+    {
+        [Required]
+        [EmailAddress]
+        public string EmailAddress { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {8} characters long.", MinimumLength = 8)]
+        [EmailAddress]
+        [Display(Name = "New password")]
+        public string NewPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm new password")]
+        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+
+        public string Token { get; set; }
     }
 
     public class RegisterBindingModel

@@ -123,7 +123,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
         [Route("Invite")]
         [CustomAuthorization(Roles = "Admin, SuperAdmin")]
         [HttpPost]
-        public async Task<HttpResponseMessage> Invite(InviteUserModel model, [FromUri]string redirectUrl)
+        public async Task<HttpResponseMessage> Invite(InviteUserModel model, [FromUri]string redirectUrl ="")
         {
 
             if (!ModelState.IsValid)
@@ -238,7 +238,6 @@ namespace BugTrackerApi.Areas.Users.Controllers
             var appDomain = ConfigurationManager.AppSettings["AppDomain"];
             var inviteEmailUrl = $"{appDomain}/account/verify/{userId}/{token}?url={redirectUrl}";
 
-
             // Get  Email Content 
             var htmlContent = InviteEmailContent();
             htmlContent = htmlContent
@@ -247,7 +246,7 @@ namespace BugTrackerApi.Areas.Users.Controllers
                 .Replace("{{DefaultPassword}}", defaultPasword);
 
             var emailService = new EmailService();
-            emailService.Subject = "Test subject";
+            emailService.Subject = "You are invited to join BugTrackingApp";
             emailService.Body = htmlContent;
             emailService.Send(recipientEmail, recipientName, true);
         }

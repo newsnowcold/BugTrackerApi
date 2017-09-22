@@ -21,6 +21,10 @@ using System.Linq;
 using ErrorCatcher.ApiFilters;
 using System.Net;
 using System.Data.Entity.Validation;
+using System.Web.Security;
+using Newtonsoft.Json;
+using BugTrackerApi.Services;
+using EmailSender;
 
 namespace BugTrackerApi.Controllers
 {
@@ -71,6 +75,55 @@ namespace BugTrackerApi.Controllers
             var user = DB.GET_user(this.CurrentUserId).First();
 
             return Ok(user);
+        }
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("RequestResetPassword")]
+        public async Task<HttpResponseMessage> RequestToResetPassword(CustomRequestPassword model, [FromUri]string redirectUrl = "")
+        {
+            if (!ModelState.IsValid)
+            {
+                return InvalidModelState(ModelState);
+            }
+
+            var user = await UserManager.FindByEmailAsync(model.Email);
+
+            if (user == null) {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+
+            var token = UserManager.GeneratePasswordResetToken(user.Id);
+
+            SendRequestPasswordEmail(redirectUrl, token, model.Email, "");
+
+            return StatusOk();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("SetNewPassword")]
+        public async Task<IHttpActionResult> SetNewPassword(CustomChangePasswordBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await UserManager.FindByEmailAsync(model.EmailAddress);
+
+            string code = this.NormalizeToken(model.Token);
+
+            var changePass = await _userManager.ResetPasswordAsync(user.Id,
+                code, model.NewPassword);
+
+            if (!changePass.Succeeded)
+            {
+                return GetErrorResult(changePass);
+            }
+
+            return Ok();
         }
 
 
@@ -646,6 +699,37 @@ namespace BugTrackerApi.Controllers
             await context.SaveChangesAsync();
 
             return true;
+        }
+
+        private void SendRequestPasswordEmail(string url, 
+                                         string token, 
+                                         string recipientEmail, 
+                                         string recipientName)
+        {
+            var htmlContent = ChangePasswordEmailContent();
+            var link = $"{url}?token={token}";
+
+            htmlContent = htmlContent.Replace("{{ChangePassLink}}", link);
+
+            var emailService = new EmailService();
+            emailService.Subject = "Request for reset password";
+            emailService.Body = htmlContent;
+            emailService.Send(recipientEmail, recipientName, true);
+        }
+
+        private string ChangePasswordEmailContent()
+        {
+            var file = new LocalFileService("\\EmailTemplates\\RequestChangePasswordTemplate.html");
+
+            return file.GetStringOfFile;
+        }
+
+        public string NormalizeToken(string rawToken)
+        {
+            string code = HttpUtility.HtmlDecode(rawToken).Replace(" ", "+");
+            code = $"{code}==";
+
+            return code;
         }
 
         #endregion
