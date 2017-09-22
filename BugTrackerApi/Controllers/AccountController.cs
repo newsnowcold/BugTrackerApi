@@ -115,7 +115,7 @@ namespace BugTrackerApi.Controllers
 
             string code = this.NormalizeToken(model.Token);
 
-            var changePass = await _userManager.ResetPasswordAsync(user.Id,
+            var changePass = await UserManager.ResetPasswordAsync(user.Id,
                 code, model.NewPassword);
 
             if (!changePass.Succeeded)
@@ -707,7 +707,7 @@ namespace BugTrackerApi.Controllers
                                          string recipientName)
         {
             var htmlContent = ChangePasswordEmailContent();
-            var link = $"{url}?token={token}";
+            var link = $"{url}?token={token}&email={recipientEmail}";
 
             htmlContent = htmlContent.Replace("{{ChangePassLink}}", link);
 
@@ -727,7 +727,7 @@ namespace BugTrackerApi.Controllers
         public string NormalizeToken(string rawToken)
         {
             string code = HttpUtility.HtmlDecode(rawToken).Replace(" ", "+");
-            code = $"{code}==";
+            //code = $"{code}==";
 
             return code;
         }
