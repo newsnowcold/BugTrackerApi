@@ -272,6 +272,16 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\assets\css\mobilereset.css" />
+    <Content Include="app\assets\css\responsive.css" />
+    <Content Include="app\assets\css\webreset.css" />
+    <Content Include="app\favicon.ico" />
+    <Content Include="app\index.html" />
+    <Content Include="app\inline.bundle.js" />
+    <Content Include="app\main.bundle.js" />
+    <Content Include="app\polyfills.bundle.js" />
+    <Content Include="app\styles.bundle.js" />
+    <Content Include="app\vendor.bundle.js" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Areas\HelpPage\TestClient.css" />
     <Content Include="Content\bootstrap.css" />
@@ -373,6 +383,11 @@
     </Content>
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\TestClientDialogs.cshtml" />
+    <Content Include="app\inline.bundle.js.map" />
+    <Content Include="app\main.bundle.js.map" />
+    <Content Include="app\polyfills.bundle.js.map" />
+    <Content Include="app\styles.bundle.js.map" />
+    <Content Include="app\vendor.bundle.js.map" />
     <None Include="Properties\PublishProfiles\Build.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
