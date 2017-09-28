@@ -32,7 +32,6 @@ namespace DBLayer
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<IssueAssignment> IssueAssignments { get; set; }
-        public virtual DbSet<Issue> Issues { get; set; }
         public virtual DbSet<IssueStatus> IssueStatuses { get; set; }
         public virtual DbSet<PriorityType> PriorityTypes { get; set; }
         public virtual DbSet<ProjectAccess> ProjectAccesses { get; set; }
@@ -40,6 +39,7 @@ namespace DBLayer
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<TimeLog> TimeLogs { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Issue> Issues { get; set; }
     
         public virtual ObjectResult<GET_list_projects_Result> GET_list_projects(Nullable<int> userId)
         {
@@ -48,19 +48,6 @@ namespace DBLayer
                 new ObjectParameter("UserId", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_list_projects_Result>("GET_list_projects", userIdParameter);
-        }
-    
-        public virtual ObjectResult<GET_list_issues_Result> GET_list_issues(Nullable<int> userId, Nullable<int> projectId)
-        {
-            var userIdParameter = userId.HasValue ?
-                new ObjectParameter("UserId", userId) :
-                new ObjectParameter("UserId", typeof(int));
-    
-            var projectIdParameter = projectId.HasValue ?
-                new ObjectParameter("ProjectId", projectId) :
-                new ObjectParameter("ProjectId", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_list_issues_Result>("GET_list_issues", userIdParameter, projectIdParameter);
         }
     
         public virtual ObjectResult<GET_list_projectMembers_Result> GET_list_projectMembers(Nullable<int> projectId)
@@ -84,6 +71,19 @@ namespace DBLayer
                 new ObjectParameter("userId", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_user_Result>("GET_user", userIdParameter);
+        }
+    
+        public virtual ObjectResult<GET_list_issues_Result> GET_list_issues(Nullable<int> userId, Nullable<int> projectId)
+        {
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(int));
+    
+            var projectIdParameter = projectId.HasValue ?
+                new ObjectParameter("ProjectId", projectId) :
+                new ObjectParameter("ProjectId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_list_issues_Result>("GET_list_issues", userIdParameter, projectIdParameter);
         }
     }
 }

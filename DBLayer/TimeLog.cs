@@ -21,7 +21,7 @@ namespace DBLayer
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public decimal Time { get; set; }
     
-        public virtual Issue Issue { get; set; }
         public virtual User User { get; set; }
+        public virtual Issue Issue { get; set; }
     }
 }

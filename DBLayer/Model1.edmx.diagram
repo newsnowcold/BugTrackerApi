@@ -9,8 +9,7 @@
         <EntityTypeShape EntityType="BugTrackerModel.AspNetUserClaim" Width="1.5" PointX="10.25" PointY="8.5" />
         <EntityTypeShape EntityType="BugTrackerModel.AspNetUserLogin" Width="1.5" PointX="10.25" PointY="11.25" />
         <EntityTypeShape EntityType="BugTrackerModel.AspNetUser" Width="1.5" PointX="8" PointY="8.75" />
-        <EntityTypeShape EntityType="BugTrackerModel.IssueAssignment" Width="1.5" PointX="5.25" PointY="2" />
-        <EntityTypeShape EntityType="BugTrackerModel.Issue" Width="1.5" PointX="3" PointY="3.875" />
+        <EntityTypeShape EntityType="BugTrackerModel.IssueAssignment" Width="1.625" PointX="5.25" PointY="2" />
         <EntityTypeShape EntityType="BugTrackerModel.IssueStatus" Width="1.5" PointX="0.75" PointY="1.75" />
         <EntityTypeShape EntityType="BugTrackerModel.PriorityType" Width="1.5" PointX="0.75" PointY="8.25" />
         <EntityTypeShape EntityType="BugTrackerModel.ProjectAccess" Width="1.5" PointX="6" PointY="4.75" />
@@ -20,17 +19,18 @@
         <EntityTypeShape EntityType="BugTrackerModel.User" Width="1.5" PointX="3" PointY="0.75" />
         <AssociationConnector Association="BugTrackerModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="BugTrackerModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="BugTrackerModel.FK_IssueAssignments_Issues" />
         <AssociationConnector Association="BugTrackerModel.FK_IssueAssignments_Users" />
-        <AssociationConnector Association="BugTrackerModel.FK_Issues_IssueStatuses" />
-        <AssociationConnector Association="BugTrackerModel.FK_Issues_PriorityTypes" />
-        <AssociationConnector Association="BugTrackerModel.FK_Issues_Projects" />
-        <AssociationConnector Association="BugTrackerModel.FK_TimeLogs_Issues" />
         <AssociationConnector Association="BugTrackerModel.FK_ProjectAccess_ProjectAccessTypes" />
         <AssociationConnector Association="BugTrackerModel.FK_ProjectAccess_Projects" />
         <AssociationConnector Association="BugTrackerModel.FK_ProjectAccess_Users" />
         <AssociationConnector Association="BugTrackerModel.FK_TimeLogs_Users" />
         <AssociationConnector Association="BugTrackerModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="BugTrackerModel.Issue" Width="1.5" PointX="12.375" PointY="1.25" />
+        <AssociationConnector Association="BugTrackerModel.FK_IssueAssignments_Issues" />
+        <AssociationConnector Association="BugTrackerModel.FK_Issues_IssueStatuses" />
+        <AssociationConnector Association="BugTrackerModel.FK_Issues_PriorityTypes" />
+        <AssociationConnector Association="BugTrackerModel.FK_Issues_Projects" />
+        <AssociationConnector Association="BugTrackerModel.FK_TimeLogs_Issues" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

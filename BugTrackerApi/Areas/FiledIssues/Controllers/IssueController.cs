@@ -5,6 +5,7 @@ using DBLayer;
 using ErrorCatcher.ApiFilters;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -38,18 +39,47 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
             var statusOpen = DB.IssueStatuses.Where(a => a.Status.ToLower().Contains("open"))
                                 .Select(a => a.Id).FirstOrDefault();
 
-            DB.Issues.Add(new Issue()
+            using (var context = DB)
             {
-                Title = model.Title,
-                Description = model.Description,
-                CreatedBy = this.CurrentUserId,
-                DateCreated = DateTime.UtcNow,
-                ProjectId = projectId,
-                PriorityId = model.PriorityId,
-                StatusId = statusOpen
-            });
+                using (var dbTrans = context.Database.BeginTransaction())
+                {
+                    var newIssue = new Issue();
+                    newIssue.Title = model.Title;
+                    newIssue.Description = model.Description;
+                    newIssue.CreatedBy = this.CurrentUserId;
+                    newIssue.DateCreated = DateTime.UtcNow;
+                    newIssue.ProjectId = projectId;
+                    newIssue.PriorityId = model.PriorityId;
+                    newIssue.StatusId = statusOpen;
+                    newIssue.StartDate = model.StartDate;
+                    newIssue.EndDate = model.EndDate;
 
-            await DB.SaveChangesAsync();
+                    context.Issues.Add(newIssue);
+                    try
+                    {
+                        await context.SaveChangesAsync();
+
+                        if (model.AssingTo > 0)
+                        {
+                            context.IssueAssignments.Add(new IssueAssignment()
+                            {
+                                IssueId = newIssue.Id,
+                                UserId = model.AssingTo
+                            });
+
+                            await context.SaveChangesAsync();
+                        }
+
+                        dbTrans.Commit();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        dbTrans.Rollback();
+                        throw new Exception("Error while creating entry", e);
+                    }
+                }
+            }
+
 
             return StatusOk();
         }
