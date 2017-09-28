@@ -25,5 +25,9 @@ namespace DBLayer
         public int StatusId { get; set; }
         public int PriorityId { get; set; }
         public string UpdatedBy { get; set; }
+        public string AssignedTo { get; set; }
+        public Nullable<int> AssignedToId { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public Nullable<System.DateTime> EndDate { get; set; }
     }
 }
