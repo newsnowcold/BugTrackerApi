@@ -123,13 +123,54 @@ namespace BugTrackerApi.Areas.FiledIssue.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Can't find issue/bug ticket.");
             }
 
-            issue.Title = model.Title;
-            issue.Description = model.Description;
-            issue.PriorityId = model.PriorityId;
-            issue.LastUpdateDate = DateTime.UtcNow;
-            issue.UpdatedBy = this.CurrentUserId;
 
-            await DB.SaveChangesAsync();
+
+
+            using (var context = DB)
+            {
+                using (var dbTrans = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        issue.Title = model.Title;
+                        issue.Description = model.Description;
+                        issue.PriorityId = model.PriorityId;
+                        issue.LastUpdateDate = DateTime.UtcNow;
+                        issue.UpdatedBy = this.CurrentUserId;
+                        issue.StartDate = model.StartDate;
+                        issue.EndDate = model.EndDate;
+
+                        await DB.SaveChangesAsync();
+
+                        if (model.AssingTo > 0)
+                        {
+                            var assignedPerson = context.IssueAssignments.Where(a => a.IssueId == issue.Id).FirstOrDefault();
+
+                            if (assignedPerson != null && assignedPerson.UserId != model.AssingTo)
+                            {
+                                assignedPerson.UserId = model.AssingTo;
+                            }
+                            else if (assignedPerson == null)
+                            {
+                                context.IssueAssignments.Add(new IssueAssignment()
+                                {
+                                    IssueId = issue.Id,
+                                    UserId = model.AssingTo
+                                });
+                            }
+
+                            await context.SaveChangesAsync();
+                        }
+
+                        dbTrans.Commit();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        dbTrans.Rollback();
+                        throw new Exception("Error while creating entry", e);
+                    }
+                }
+            }
 
             return StatusOk();
         }
