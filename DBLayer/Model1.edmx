@@ -83,6 +83,8 @@
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
           <Property Name="DeletedDate" Type="datetime" />
           <Property Name="DeletedBy" Type="int" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
         </EntityType>
         <EntityType Name="IssueStatuses">
           <Key>
@@ -429,7 +431,6 @@
           <EntitySet Name="AspNetUserLogins" EntityType="BugTrackerModel.AspNetUserLogin" />
           <EntitySet Name="AspNetUsers" EntityType="BugTrackerModel.AspNetUser" />
           <EntitySet Name="IssueAssignments" EntityType="BugTrackerModel.IssueAssignment" />
-          <EntitySet Name="Issues" EntityType="BugTrackerModel.Issue" />
           <EntitySet Name="IssueStatuses" EntityType="BugTrackerModel.IssueStatus" />
           <EntitySet Name="PriorityTypes" EntityType="BugTrackerModel.PriorityType" />
           <EntitySet Name="ProjectAccesses" EntityType="BugTrackerModel.ProjectAccess" />
@@ -445,29 +446,9 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="AspNetUserLogin" EntitySet="AspNetUserLogins" />
           </AssociationSet>
-          <AssociationSet Name="FK_IssueAssignments_Issues" Association="BugTrackerModel.FK_IssueAssignments_Issues">
-            <End Role="Issue" EntitySet="Issues" />
-            <End Role="IssueAssignment" EntitySet="IssueAssignments" />
-          </AssociationSet>
           <AssociationSet Name="FK_IssueAssignments_Users" Association="BugTrackerModel.FK_IssueAssignments_Users">
             <End Role="User" EntitySet="Users" />
             <End Role="IssueAssignment" EntitySet="IssueAssignments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Issues_IssueStatuses" Association="BugTrackerModel.FK_Issues_IssueStatuses">
-            <End Role="IssueStatus" EntitySet="IssueStatuses" />
-            <End Role="Issue" EntitySet="Issues" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Issues_PriorityTypes" Association="BugTrackerModel.FK_Issues_PriorityTypes">
-            <End Role="PriorityType" EntitySet="PriorityTypes" />
-            <End Role="Issue" EntitySet="Issues" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Issues_Projects" Association="BugTrackerModel.FK_Issues_Projects">
-            <End Role="Project" EntitySet="Projects" />
-            <End Role="Issue" EntitySet="Issues" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TimeLogs_Issues" Association="BugTrackerModel.FK_TimeLogs_Issues">
-            <End Role="Issue" EntitySet="Issues" />
-            <End Role="TimeLog" EntitySet="TimeLogs" />
           </AssociationSet>
           <AssociationSet Name="FK_ProjectAccess_ProjectAccessTypes" Association="BugTrackerModel.FK_ProjectAccess_ProjectAccessTypes">
             <End Role="ProjectAccessType" EntitySet="ProjectAccessTypes" />
@@ -489,16 +470,37 @@
             <End Role="AspNetRole" EntitySet="AspNetRoles" />
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
           </AssociationSet>
-          <FunctionImport Name="GET_list_issues" ReturnType="Collection(BugTrackerModel.GET_list_issues_Result)">
-            <Parameter Name="UserId" Mode="In" Type="Int32" />
-            <Parameter Name="ProjectId" Mode="In" Type="Int32" />
-          </FunctionImport>
           <FunctionImport Name="GET_list_projectMembers" ReturnType="Collection(BugTrackerModel.GET_list_projectMembers_Result)">
           <Parameter Name="ProjectId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_list_users" ReturnType="Collection(BugTrackerModel.GET_list_users_Result)" />
           <FunctionImport Name="GET_user" ReturnType="Collection(BugTrackerModel.GET_user_Result)">
-            <Parameter Name="userId" Mode="In" Type="Int32" />
+          <Parameter Name="userId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="Issues" EntityType="BugTrackerModel.Issue" />
+          <AssociationSet Name="FK_IssueAssignments_Issues" Association="BugTrackerModel.FK_IssueAssignments_Issues">
+            <End Role="Issue" EntitySet="Issues" />
+            <End Role="IssueAssignment" EntitySet="IssueAssignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Issues_IssueStatuses" Association="BugTrackerModel.FK_Issues_IssueStatuses">
+            <End Role="IssueStatus" EntitySet="IssueStatuses" />
+            <End Role="Issue" EntitySet="Issues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Issues_PriorityTypes" Association="BugTrackerModel.FK_Issues_PriorityTypes">
+            <End Role="PriorityType" EntitySet="PriorityTypes" />
+            <End Role="Issue" EntitySet="Issues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Issues_Projects" Association="BugTrackerModel.FK_Issues_Projects">
+            <End Role="Project" EntitySet="Projects" />
+            <End Role="Issue" EntitySet="Issues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TimeLogs_Issues" Association="BugTrackerModel.FK_TimeLogs_Issues">
+            <End Role="Issue" EntitySet="Issues" />
+            <End Role="TimeLog" EntitySet="TimeLogs" />
+          </AssociationSet>
+          <FunctionImport Name="GET_list_issues" ReturnType="Collection(BugTrackerModel.GET_list_issues_Result)">
+            <Parameter Name="UserId" Mode="In" Type="Int32" />
+            <Parameter Name="ProjectId" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GET_list_projects_Result">
@@ -567,32 +569,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <Property Name="IssueId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Issue" Relationship="BugTrackerModel.FK_IssueAssignments_Issues" FromRole="IssueAssignment" ToRole="Issue" />
           <NavigationProperty Name="User" Relationship="BugTrackerModel.FK_IssueAssignments_Users" FromRole="IssueAssignment" ToRole="User" />
-        </EntityType>
-        <EntityType Name="Issue">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <Property Name="LastUpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="ResolutionSummary" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProjectId" Type="Int32" Nullable="false" />
-          <Property Name="PriorityId" Type="Int32" Nullable="false" />
-          <Property Name="StatusId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="IssueAssignments" Relationship="BugTrackerModel.FK_IssueAssignments_Issues" FromRole="Issue" ToRole="IssueAssignment" />
-          <NavigationProperty Name="IssueStatus" Relationship="BugTrackerModel.FK_Issues_IssueStatuses" FromRole="Issue" ToRole="IssueStatus" />
-          <NavigationProperty Name="PriorityType" Relationship="BugTrackerModel.FK_Issues_PriorityTypes" FromRole="Issue" ToRole="PriorityType" />
-          <NavigationProperty Name="Project" Relationship="BugTrackerModel.FK_Issues_Projects" FromRole="Issue" ToRole="Project" />
-          <NavigationProperty Name="TimeLogs" Relationship="BugTrackerModel.FK_TimeLogs_Issues" FromRole="Issue" ToRole="TimeLog" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-          <Property Name="DeletedBy" Type="Int32" />
+          <NavigationProperty Name="Issue" Relationship="BugTrackerModel.FK_IssueAssignments_Issues" FromRole="IssueAssignment" ToRole="Issue" />
         </EntityType>
         <EntityType Name="IssueStatus">
           <Key>
@@ -642,11 +620,11 @@
           <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="DateModified" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Issues" Relationship="BugTrackerModel.FK_Issues_Projects" FromRole="Project" ToRole="Issue" />
           <NavigationProperty Name="ProjectAccesses" Relationship="BugTrackerModel.FK_ProjectAccess_Projects" FromRole="Project" ToRole="ProjectAccess" />
           <Property Name="DeletedDate" Type="DateTime" Precision="3" />
           <Property Name="DeletedBy" Type="Int32" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Issues" Relationship="BugTrackerModel.FK_Issues_Projects" FromRole="Project" ToRole="Issue" />
         </EntityType>
         <EntityType Name="TimeLog">
           <Key>
@@ -658,8 +636,8 @@
           <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="Time" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
-          <NavigationProperty Name="Issue" Relationship="BugTrackerModel.FK_TimeLogs_Issues" FromRole="TimeLog" ToRole="Issue" />
           <NavigationProperty Name="User" Relationship="BugTrackerModel.FK_TimeLogs_Users" FromRole="TimeLog" ToRole="User" />
+          <NavigationProperty Name="Issue" Relationship="BugTrackerModel.FK_TimeLogs_Issues" FromRole="TimeLog" ToRole="Issue" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -705,18 +683,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_IssueAssignments_Issues">
-          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="1" />
-          <End Type="BugTrackerModel.IssueAssignment" Role="IssueAssignment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Issue">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="IssueAssignment">
-              <PropertyRef Name="IssueId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_IssueAssignments_Users">
           <End Type="BugTrackerModel.User" Role="User" Multiplicity="1" />
           <End Type="BugTrackerModel.IssueAssignment" Role="IssueAssignment" Multiplicity="*" />
@@ -726,54 +692,6 @@
             </Principal>
             <Dependent Role="IssueAssignment">
               <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Issues_IssueStatuses">
-          <End Type="BugTrackerModel.IssueStatus" Role="IssueStatus" Multiplicity="1" />
-          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="IssueStatus">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Issue">
-              <PropertyRef Name="StatusId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Issues_PriorityTypes">
-          <End Type="BugTrackerModel.PriorityType" Role="PriorityType" Multiplicity="1" />
-          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PriorityType">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Issue">
-              <PropertyRef Name="PriorityId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Issues_Projects">
-          <End Type="BugTrackerModel.Project" Role="Project" Multiplicity="1" />
-          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Project">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Issue">
-              <PropertyRef Name="ProjectId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TimeLogs_Issues">
-          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="1" />
-          <End Type="BugTrackerModel.TimeLog" Role="TimeLog" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Issue">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="TimeLog">
-              <PropertyRef Name="IssueId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -829,20 +747,6 @@
           <End Type="BugTrackerModel.AspNetRole" Role="AspNetRole" Multiplicity="*" />
           <End Type="BugTrackerModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
         </Association>
-        <ComplexType Name="GET_list_issues_Result">
-          <Property Type="Int32" Name="Id" Nullable="false" />
-          <Property Type="String" Name="Title" Nullable="false" MaxLength="150" />
-          <Property Type="String" Name="Description" Nullable="true" MaxLength="255" />
-          <Property Type="DateTime" Name="DateCreated" Nullable="false" Precision="23" />
-          <Property Type="String" Name="ResolutionSummary" Nullable="true" MaxLength="255" />
-          <Property Type="DateTime" Name="LastUpdateDate" Nullable="true" Precision="23" />
-          <Property Type="String" Name="CreatedBy" Nullable="true" MaxLength="201" />
-          <Property Type="String" Name="Status" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="Priority" Nullable="false" MaxLength="100" />
-          <Property Type="Int32" Name="StatusId" Nullable="false" />
-          <Property Type="Int32" Name="PriorityId" Nullable="false" />
-          <Property Type="String" Name="UpdatedBy" Nullable="true" MaxLength="201" />
-        </ComplexType>
         <ComplexType Name="GET_list_projectMembers_Result">
           <Property Type="Int32" Name="Id" Nullable="false" />
           <Property Type="String" Name="Name" Nullable="true" MaxLength="201" />
@@ -868,6 +772,110 @@
           <Property Type="DateTime" Name="JoinedDate" Nullable="true" Precision="23" />
           <Property Type="Boolean" Name="AllowNotification" Nullable="false" />
           <Property Type="String" Name="Role" Nullable="false" MaxLength="256" />
+        </ComplexType>
+        <EntityType Name="Issue">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <Property Name="LastUpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="ResolutionSummary" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProjectId" Type="Int32" Nullable="false" />
+          <Property Name="PriorityId" Type="Int32" Nullable="false" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <Property Name="DeletedBy" Type="Int32" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="IssueAssignments" Relationship="BugTrackerModel.FK_IssueAssignments_Issues" FromRole="Issue" ToRole="IssueAssignment" />
+          <NavigationProperty Name="IssueStatus" Relationship="BugTrackerModel.FK_Issues_IssueStatuses" FromRole="Issue" ToRole="IssueStatus" />
+          <NavigationProperty Name="PriorityType" Relationship="BugTrackerModel.FK_Issues_PriorityTypes" FromRole="Issue" ToRole="PriorityType" />
+          <NavigationProperty Name="Project" Relationship="BugTrackerModel.FK_Issues_Projects" FromRole="Issue" ToRole="Project" />
+          <NavigationProperty Name="TimeLogs" Relationship="BugTrackerModel.FK_TimeLogs_Issues" FromRole="Issue" ToRole="TimeLog" />
+        </EntityType>
+        <Association Name="FK_IssueAssignments_Issues">
+          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="1" />
+          <End Type="BugTrackerModel.IssueAssignment" Role="IssueAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Issue">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="IssueAssignment">
+              <PropertyRef Name="IssueId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Issues_IssueStatuses">
+          <End Type="BugTrackerModel.IssueStatus" Role="IssueStatus" Multiplicity="1" />
+          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IssueStatus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Issue">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Issues_PriorityTypes">
+          <End Type="BugTrackerModel.PriorityType" Role="PriorityType" Multiplicity="1" />
+          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PriorityType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Issue">
+              <PropertyRef Name="PriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Issues_Projects">
+          <End Type="BugTrackerModel.Project" Role="Project" Multiplicity="1" />
+          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Issue">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TimeLogs_Issues">
+          <End Type="BugTrackerModel.Issue" Role="Issue" Multiplicity="1" />
+          <End Type="BugTrackerModel.TimeLog" Role="TimeLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Issue">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TimeLog">
+              <PropertyRef Name="IssueId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="GET_list_issues_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="false" MaxLength="150" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="DateTime" Name="DateCreated" Nullable="false" Precision="23" />
+          <Property Type="String" Name="ResolutionSummary" Nullable="true" MaxLength="255" />
+          <Property Type="DateTime" Name="LastUpdateDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="CreatedBy" Nullable="true" MaxLength="201" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Priority" Nullable="false" MaxLength="100" />
+          <Property Type="Int32" Name="StatusId" Nullable="false" />
+          <Property Type="Int32" Name="PriorityId" Nullable="false" />
+          <Property Type="String" Name="UpdatedBy" Nullable="true" MaxLength="201" />
+          <Property Type="String" Name="AssignedTo" Nullable="true" MaxLength="201" />
+          <Property Type="Int32" Name="AssignedToId" Nullable="true" />
+          <Property Type="DateTime" Name="StartDate" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="EndDate" Nullable="true" Precision="23" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -939,26 +947,6 @@
               <MappingFragment StoreEntitySet="IssueAssignments">
                 <ScalarProperty Name="IssueId" ColumnName="IssueId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Issues">
-            <EntityTypeMapping TypeName="BugTrackerModel.Issue">
-              <MappingFragment StoreEntitySet="Issues">
-                <ScalarProperty Name="DeletedBy" ColumnName="DeletedBy" />
-                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="PriorityId" ColumnName="PriorityId" />
-                <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
-                <ScalarProperty Name="ResolutionSummary" ColumnName="ResolutionSummary" />
-                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1048,24 +1036,6 @@
               <ScalarProperty Name="Id" ColumnName="RoleId" />
             </EndProperty>
           </AssociationSetMapping>
-          <FunctionImportMapping FunctionImportName="GET_list_issues" FunctionName="BugTrackerModel.Store.GET_list_issues">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_issues_Result">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
-                <ScalarProperty Name="ResolutionSummary" ColumnName="ResolutionSummary" />
-                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Priority" ColumnName="Priority" />
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="PriorityId" ColumnName="PriorityId" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GET_list_projectMembers" FunctionName="BugTrackerModel.Store.GET_list_projectMembers">
             <ResultMapping>
               <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_projectMembers_Result">
@@ -1101,6 +1071,50 @@
                 <ScalarProperty Name="JoinedDate" ColumnName="JoinedDate" />
                 <ScalarProperty Name="AllowNotification" ColumnName="AllowNotification" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Issues">
+            <EntityTypeMapping TypeName="BugTrackerModel.Issue">
+              <MappingFragment StoreEntitySet="Issues">
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="DeletedBy" ColumnName="DeletedBy" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="PriorityId" ColumnName="PriorityId" />
+                <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+                <ScalarProperty Name="ResolutionSummary" ColumnName="ResolutionSummary" />
+                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GET_list_issues" FunctionName="BugTrackerModel.Store.GET_list_issues">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BugTrackerModel.GET_list_issues_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="ResolutionSummary" ColumnName="ResolutionSummary" />
+                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="PriorityId" ColumnName="PriorityId" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="AssignedTo" ColumnName="AssignedTo" />
+                <ScalarProperty Name="AssignedToId" ColumnName="AssignedToId" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

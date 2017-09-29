@@ -18,7 +18,7 @@ namespace DBLayer
         public int UserId { get; set; }
         public int IssueId { get; set; }
     
-        public virtual Issue Issue { get; set; }
         public virtual User User { get; set; }
+        public virtual Issue Issue { get; set; }
     }
 }

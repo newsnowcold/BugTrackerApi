@@ -35,6 +35,8 @@ namespace DBLayer
         public bool IsDeleted { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
         public Nullable<int> DeletedBy { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public Nullable<System.DateTime> EndDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IssueAssignment> IssueAssignments { get; set; }

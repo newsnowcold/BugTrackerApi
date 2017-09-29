@@ -15,6 +15,12 @@ namespace BugTrackerApi.Areas.FiledIssue.Models
         [Required]
         public int PriorityId { get; set; }
 
+        public int AssingTo { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
+
     }
 
     public class UpdateIssueModel
@@ -29,6 +35,12 @@ namespace BugTrackerApi.Areas.FiledIssue.Models
 
         [Required]
         public int PriorityId { get; set; }
+
+        public int AssingTo { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
     }
 
     public class UpdateStatusModel
