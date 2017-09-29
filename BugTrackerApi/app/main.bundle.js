@@ -612,6 +612,9 @@ var LoginFormComponent = (function () {
         this.http = http;
         this.router = router;
         this.userService = userService;
+        this.goTo = function (loc) {
+            this.router.navigate([loc]);
+        };
     }
     ;
     LoginFormComponent.prototype.ngOnInit = function () {
@@ -637,9 +640,6 @@ var LoginFormComponent = (function () {
     LoginFormComponent.prototype.handlerLoginError = function (err) {
         var error = err.json();
         this.errorMsg = error.error_description;
-    };
-    LoginFormComponent.prototype.goTo = function (loc) {
-        this.router.navigate([loc]);
     };
     return LoginFormComponent;
 }());
@@ -900,7 +900,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "#dashboard {\r\n    position: relative;\r\n}\r\n\r\n#dashboard .project-navigation {\r\n    margin-bottom: 40px;\r\n}\r\n\r\n#dashboard .project-issues {\r\n    padding: 10px;\r\n    box-shadow: 0px 1px 3px #c3c3c3;\r\n}\r\n\r\n /* MODAL */\r\n#modal-reportbug .bugPriority {\r\n    margin-bottom: 50px; \r\n}\r\n\r\n#modal-addProject .project-members {\r\n    width: 100%;\r\n    margin: 5px 0;\r\n    border: 1px solid #CCC;\r\n    padding: 10px;\r\n}\r\n\r\n#dashbmodal-addProjectoard .project-members .available,\r\n#modal-addProject .project-members .added {\r\n    padding: 10px;\r\n}", ""]);
+exports.push([module.i, "#dashboard {\r\n    position: relative;\r\n}\r\n\r\n#dashboard .project-navigation {\r\n    margin-bottom: 40px;\r\n}\r\n\r\n#dashboard .project-issues {\r\n    padding: 10px;\r\n    box-shadow: 0px 1px 3px #c3c3c3;\r\n}\r\n\r\n /* MODAL */\r\n#modal-reportbug .bugPriority {\r\n    margin-bottom: 50px; \r\n}\r\n\r\n#modal-addProject .project-members {\r\n    width: 100%;\r\n    margin: 5px 0;\r\n    border: 1px solid #CCC;\r\n    padding: 10px;\r\n}\r\n\r\n#dashbmodal-addProjectoard .project-members .available,\r\n#modal-addProject .project-members .added {\r\n    padding: 10px;\r\n}\r\n\r\n.assignment > label {\r\n    margin-right: 5px;\r\n}", ""]);
 
 // exports
 
@@ -913,7 +913,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<section id=\"dashboard\">\r\n\r\n\r\n\r\n    <div layout=\"column\">\r\n\r\n        <div class=\"project-navigation\" layout=\"row\" layout-align=\"start center\">\r\n\r\n            <div *ngIf=\"!selectedProject\" class=\"muteTxt\">Please add project. go to settings page and add project</div>\r\n\r\n            <div class=\"dropdown\" *ngIf=\"selectedProject\">\r\n                <button class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">\r\n           {{ selectedProject.Name }}\r\n        <span class=\"caret\"></span></button>\r\n                <ul class=\"dropdown-menu\">\r\n                    <li class=\"bm-padding clickable\" (click)=\"selectProject(project)\" \r\n                        *ngFor='let project of projects; trackBy: index;'>\r\n                        <span>{{project.Name}}</span>\r\n                    </li>\r\n                </ul>\r\n            </div>\r\n        </div>\r\n        <!-- Default panel contents -->\r\n        <div class=\"project-issues\">\r\n            <div layout=\"row\" layout-align=\"space-between center\">\r\n                <h4>Project issues[{{issues.length}}]</h4>\r\n                <div layout=\"row\">\r\n\r\n                    <!-- Priority type filter -->\r\n                    <div class=\"dropdown\">\r\n                        <button class=\"btn btn default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">\r\n                            Filter By priority\r\n                            <span class=\"caret\"></span>\r\n                        </button>\r\n                        <ul class=\"dropdown-menu\" *ngIf=\"priorityTypeFilter\">\r\n                            <li class=\"bm-padding\" *ngFor=\"let priority of priorityTypeFilter | keys\" (click)=\"$event.stopPropagation()\">\r\n                                <label class=\"clickable\">\r\n                                    <input type=\"checkbox\" [(ngModel)]=\"priorityTypeFilter[priority]\">\r\n                                    {{priority}}\r\n                                </label>\r\n                            </li>\r\n                        </ul>\r\n                    </div>\r\n\r\n                    <!-- Status filter -->\r\n                    <div class=\"dropdown\">\r\n                        <button class=\"btn btn default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">\r\n                            Filter By Status\r\n                            <span class=\"caret\"></span>\r\n                        </button>\r\n                        <ul class=\"dropdown-menu\" *ngIf=\"statusTypeFilter\">\r\n                            <li class=\"bm-padding\" *ngFor=\"let statustype of statusTypeFilter | keys\" (click)=\"$event.stopPropagation()\">\r\n                                <label class=\"clickable\">\r\n                                    <input type=\"checkbox\" [(ngModel)]=\"statusTypeFilter[statustype]\">\r\n                                    {{statustype}}\r\n                                </label>\r\n                            </li>\r\n                        </ul>\r\n                    </div>\r\n                    <button class=\"btn default\" layout=\"row\" layout-align=\"space-between\" data-toggle=\"modal\" data-target=\"#modal-reportbug\">\r\n          <i class=\"material-icons\" title=\"Report bug\">bug_report</i>\r\n          Report bug\r\n        </button>\r\n                </div>\r\n            </div>\r\n            <!-- Table -->\r\n            <table class=\"table\">\r\n                <thead>\r\n                    <tr>\r\n                        <th>#</th>\r\n                        <th>Creator</th>\r\n                        <th>Ticket #</th>\r\n                        <th>Title</th>\r\n                        <th>Status</th>\r\n                        <th>Priority</th>\r\n                        <th>Updated by</th>\r\n                        <th>Date created</th>\r\n                        <th>Last update</th>\r\n                        <th>&nbsp;</th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n                    <ng-container *ngFor=\"let bug of issues; trackBy: index;\">\r\n                        <tr *ngIf=\"statusTypeFilter[bug.Status] && priorityTypeFilter[bug.Priority]\">\r\n                            <th>{{bug.index}}</th>\r\n                            <td>{{bug.CreatedBy}}</td>\r\n                            <td>{{bug.Id}}</td>\r\n                            <td>{{bug.Title}}</td>\r\n                            <td style=\"background: #ccc;\" class=\"clickable\" (click)=\"openModalForUpdatingStatus(bug)\">{{bug.Status}}</td>\r\n                            <td>{{bug.Priority}}</td>\r\n                            <td>{{bug.UpdatedBy}}</td>\r\n                            <td>{{bug.DateCreated}}</td>\r\n                            <td>{{bug.LastUpdateDate}}</td>\r\n                            <td>\r\n                                <div layout=\"row\" class=\"muteTxt clickable\">\r\n                                    <i class=\"material-icons\" (click)=\"openModalForRemovingBug(bug)\">delete</i>\r\n                                    <i class=\"material-icons\" (click)=\"openModalForUpdatingIssueObject(bug)\">mode_edit</i>\r\n                                </div>\r\n                            </td>\r\n                        </tr>\r\n                    </ng-container>\r\n                </tbody>\r\n            </table>\r\n        </div>\r\n    </div>\r\n</section>\r\n\r\n<!-- template for modal of bug reporting -->\r\n<div id=\"modal-reportbug\" class=\"modal fade\" role=\"dialog\">\r\n    <div class=\"modal-dialog\">\r\n\r\n        <!-- Modal content-->\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                <h4 class=\"modal-title\">Report bug</h4>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n\r\n                <div layout=\"row\" *ngIf=\"priorityTypes\" class=\"project-field bugPriority\" layout-align=\"start center\">\r\n                    <label>Select bug priority level</label>\r\n                    <select [(ngModel)]=\"selectedPriorityType.Id\">\r\n            <option [ngValue]=\"prioType.Id\" *ngFor=\"let prioType of priorityTypes; trackBy: index;\">\r\n              {{prioType.PriorityType1}}\r\n            </option>\r\n          </select>\r\n                </div>\r\n\r\n                <!--project title-->\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"space-between center\">\r\n                    <label>Bug title</label>\r\n                    <input type=\"text\" [(ngModel)]=\"issue.title\" placeholder=\"Enter bug title title\" class=\"text-default\" flex=\"80\">\r\n                </div>\r\n\r\n                <!--project description [optional]-->\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"space-between center\">\r\n                    <label>Bug description</label>\r\n\r\n                    <textarea rows=\"4\" cols=\"50\" [(ngModel)]=\"issue.description\" placeholder=\"Add bug description [optional]\" flex=\"80\"></textarea>\r\n                </div>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-primary\" (click)=\"saveBug()\">Save</button>\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\r\n            </div>\r\n        </div>\r\n\r\n    </div>\r\n</div>\r\n\r\n<!-- template for modal of updating bug ticker -->\r\n<div id=\"modal-updatebugticket\" class=\"modal fade\" role=\"dialog\">\r\n    <div class=\"modal-dialog\" *ngIf=\"toUpdateBug\">\r\n\r\n        <!-- Modal content-->\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                <h4 class=\"modal-title\">Update bug [{{toUpdateBug.Title}}]</h4>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n\r\n                <div layout=\"row\" class=\"project-field bugPriority\" layout-align=\"start center\">\r\n                    <label>Select bug priority level</label>\r\n                    <select [(ngModel)]=\"toUpdateBug.PriorityId\">\r\n            <option [ngValue]=\"prioType.Id\" *ngFor=\"let prioType of priorityTypes; trackBy: index;\">\r\n              {{prioType.PriorityType1}}\r\n            </option>\r\n          </select>\r\n                </div>\r\n\r\n                <!--project title-->\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"space-between center\">\r\n                    <label>Bug title</label>\r\n                    <input type=\"text\" [(ngModel)]=\"toUpdateBug.Title\" placeholder=\"Enter bug title title\" class=\"text-default\" flex=\"80\">\r\n                </div>\r\n\r\n                <!--project description [optional]-->\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"space-between center\">\r\n                    <label>Bug title</label>\r\n\r\n                    <textarea rows=\"4\" cols=\"50\" [(ngModel)]=\"toUpdateBug.Description\" placeholder=\"Add bug description [optional]\" flex=\"80\"></textarea>\r\n                </div>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-primary\" (click)=\"updatebugticket()\">Save</button>\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\r\n            </div>\r\n        </div>\r\n\r\n    </div>\r\n</div>\r\n\r\n\r\n\r\n<!-- template for modal of updating bug status -->\r\n<div id=\"modal-updatebug\" class=\"modal fade\" role=\"dialog\">\r\n    <div class=\"modal-dialog\" *ngIf=\"toUpdateBug\">\r\n\r\n        <!-- Modal content-->\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                <h4 class=\"modal-title\">Update Status [{{toUpdateBug.Title}}]</h4>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n\r\n                <div layout=\"row\" class=\"project-field bugPriority\" layout-align=\"start center\">\r\n                    <label>Select updated status</label>\r\n                    <select [(ngModel)]=\"toUpdateBug.StatusId\">\r\n                    <option [ngValue]=\"status.Id\" *ngFor=\"let status of statusTypes; trackBy: index;\">\r\n                      {{status.Status}}\r\n                    </option>\r\n                  </select>\r\n                </div>\r\n\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"space-between center\">\r\n                    <label>Resolution Summary</label>\r\n\r\n                    <textarea rows=\"4\" cols=\"50\" [(ngModel)]=\"toUpdateBug.ResolutionSummary\" placeholder=\"Add resolution summary [optional]\"\r\n                        flex=\"80\"></textarea>\r\n                </div>\r\n\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-primary\" (click)=\"updateBugStatus()\">Save</button>\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<!-- template for modal for deleting issue -->\r\n<div id=\"modal-removeBug\" class=\"modal fade\" role=\"dialog\">\r\n    <div class=\"modal-dialog\" *ngIf=\"toRemoveBug\">\r\n\r\n        <!-- Modal content-->\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                <h4 class=\"modal-title\">Remove bug</h4>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n                Are you to remove bug [{{toRemoveBug.Title}}]\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-primary\" (click)=\"removeBug()\">Save</button>\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<section id=\"dashboard\">\r\n\r\n\r\n\r\n    <div layout=\"column\">\r\n\r\n        <div class=\"project-navigation\" layout=\"row\" layout-align=\"start center\">\r\n\r\n            <div *ngIf=\"!selectedProject\" class=\"muteTxt\">Please add project. go to settings page and add project</div>\r\n\r\n            <div class=\"dropdown\" *ngIf=\"selectedProject\">\r\n                <button class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">\r\n                {{ selectedProject.Name }}\r\n                <span class=\"caret\"></span></button>\r\n                <ul class=\"dropdown-menu\">\r\n                    <li class=\"bm-padding clickable\" (click)=\"selectProject(project)\" \r\n                        *ngFor='let project of projects; trackBy: index;'>\r\n                        <span>{{project.Name}}</span>\r\n                    </li>\r\n                </ul>\r\n            </div>\r\n        </div>\r\n        <!-- Default panel contents -->\r\n        <div class=\"project-issues\">\r\n            <div layout=\"row\" layout-align=\"space-between center\">\r\n                <h4>Project issues[{{issues.length}}]</h4>\r\n                <div layout=\"row\">\r\n\r\n                    <!-- Priority type filter -->\r\n                    <div class=\"dropdown\">\r\n                        <button class=\"btn btn default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">\r\n                            Filter By priority\r\n                            <span class=\"caret\"></span>\r\n                        </button>\r\n                        <ul class=\"dropdown-menu\" *ngIf=\"priorityTypeFilter\">\r\n                            <li class=\"bm-padding\" *ngFor=\"let priority of priorityTypeFilter | keys\" (click)=\"$event.stopPropagation()\">\r\n                                <label class=\"clickable\">\r\n                                    <input type=\"checkbox\" [(ngModel)]=\"priorityTypeFilter[priority]\">\r\n                                    {{priority}}\r\n                                </label>\r\n                            </li>\r\n                        </ul>\r\n                    </div>\r\n\r\n                    <!-- Status filter -->\r\n                    <div class=\"dropdown\">\r\n                        <button class=\"btn btn default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">\r\n                            Filter By Status\r\n                            <span class=\"caret\"></span>\r\n                        </button>\r\n                        <ul class=\"dropdown-menu\" *ngIf=\"statusTypeFilter\">\r\n                            <li class=\"bm-padding\" *ngFor=\"let statustype of statusTypeFilter | keys\" (click)=\"$event.stopPropagation()\">\r\n                                <label class=\"clickable\">\r\n                                    <input type=\"checkbox\" [(ngModel)]=\"statusTypeFilter[statustype]\">\r\n                                    {{statustype}}\r\n                                </label>\r\n                            </li>\r\n                        </ul>\r\n                    </div>\r\n                    <button class=\"btn default\" layout=\"row\" layout-align=\"space-between\" data-toggle=\"modal\" data-target=\"#modal-reportbug\">\r\n          <i class=\"material-icons\" title=\"Report bug\">bug_report</i>\r\n          Report bug\r\n        </button>\r\n                </div>\r\n            </div>\r\n            <!-- Table -->\r\n            <table class=\"table\">\r\n                <thead>\r\n                    <tr>\r\n                        <th>#</th>\r\n                        <th>Creator</th>\r\n                        <th>Ticket #</th>\r\n                        <th>Title</th>\r\n                        <th>Assigned To</th>\r\n                        <th>Status</th>\r\n                        <th>Priority</th>\r\n                        <th>Updated by</th>\r\n                        <th>Date created</th>\r\n                        <th>Last update</th>\r\n                        <th>Start Date</th>\r\n                        <th>End Date</th>\r\n                        <th>&nbsp;</th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n                    <ng-container *ngFor=\"let bug of issues; trackBy: index;\">\r\n                        <tr *ngIf=\"statusTypeFilter[bug.Status] && priorityTypeFilter[bug.Priority]\">\r\n                            <th>{{bug.index}}</th>\r\n                            <td>{{bug.CreatedBy}}</td>\r\n                            <td>{{bug.Id}}</td>\r\n                            <td>{{bug.Title}}</td>\r\n                            <td>{{bug.AssignedTo}}</td>\r\n                            <td style=\"background: #ccc;\" class=\"clickable\" (click)=\"openModalForUpdatingStatus(bug)\">{{bug.Status}}</td>\r\n                            <td>{{bug.Priority}}</td>\r\n                            <td>{{bug.UpdatedBy}}</td>\r\n                            <td>{{bug.DateCreated}}</td>\r\n                            <td>{{bug.LastUpdateDate}}</td>\r\n                            <td>{{bug.StartDate}}</td>\r\n                            <td>{{bug.EndDate}}</td>\r\n                            <td>\r\n                                <div layout=\"row\" class=\"muteTxt clickable\">\r\n                                    <i class=\"material-icons\" (click)=\"openModalForRemovingBug(bug)\">delete</i>\r\n                                    <i class=\"material-icons\" (click)=\"openModalForUpdatingIssueObject(bug)\">mode_edit</i>\r\n                                </div>\r\n                            </td>\r\n                        </tr>\r\n                    </ng-container>\r\n                </tbody>\r\n            </table>\r\n        </div>\r\n    </div>\r\n</section>\r\n\r\n<!-- template for modal of bug reporting -->\r\n<div id=\"modal-reportbug\" class=\"modal fade\" role=\"dialog\">\r\n    <div class=\"modal-dialog\">\r\n\r\n        <!-- Modal content-->\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                <h4 class=\"modal-title\">Report bug</h4>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n                <div layout=\"row\" layout-align=\"start center\" *ngIf=\"projectMembers\" class=\"assignment project-field dropdown\" >\r\n                    <label>Assign to</label>\r\n                    <button class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">\r\n                    {{ assignTicketTo ? assignTicketTo.Name : \"\" }}\r\n                    <span class=\"caret\"></span></button>\r\n                    <ul class=\"dropdown-menu\">\r\n                        <li class=\"bm-padding clickable\" (click)=\"selectMemberToAssign(member)\" \r\n                            *ngFor='let member of projectMembers; trackBy: index;'>\r\n                            <span>{{member.Name}}</span>\r\n                        </li>\r\n                    </ul>\r\n                </div>\r\n\r\n                <div layout=\"row\" *ngIf=\"priorityTypes\" class=\"project-field bugPriority\" layout-align=\"start center\">\r\n                    <label>Select bug priority level</label>\r\n                    <select [(ngModel)]=\"selectedPriorityType.Id\">\r\n                        <option [ngValue]=\"prioType.Id\" *ngFor=\"let prioType of priorityTypes; trackBy: index;\">\r\n                        {{prioType.PriorityType1}}\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n\r\n                <!--project title-->\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"space-between center\">\r\n                    <label>Bug title</label>\r\n                    <input type=\"text\" [(ngModel)]=\"issue.title\" placeholder=\"Enter bug title title\" class=\"text-default\" flex=\"80\">\r\n                </div>\r\n\r\n\r\n                <!--project description [optional]-->\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"space-between center\">\r\n                    <label>Bug description</label>\r\n\r\n                    <textarea rows=\"4\" cols=\"50\" [(ngModel)]=\"issue.description\" placeholder=\"Add bug description [optional]\" flex=\"80\"></textarea>\r\n                </div>\r\n\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"start center\" layout-padding>\r\n                    <label>Start Date</label>\r\n                    <input type=\"text\" style=\"margin-left: 25px;\" id=\"startDate\" class=\"text-default\">\r\n                </div>\r\n\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"start center\" layout-padding>\r\n                    <label>End Date</label>\r\n                    <input type=\"text\" style=\"margin-left: 33px;\" id=\"endDate\" class=\"text-default\">\r\n                </div>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-primary\" (click)=\"saveBug()\">Save</button>\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\r\n            </div>\r\n        </div>\r\n\r\n    </div>\r\n</div>\r\n\r\n<!-- template for modal of updating bug ticker -->\r\n<div id=\"modal-updatebugticket\" class=\"modal fade\" role=\"dialog\">\r\n    <div class=\"modal-dialog\" *ngIf=\"toUpdateBug\">\r\n\r\n        <!-- Modal content-->\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                <h4 class=\"modal-title\">Update bug [{{toUpdateBug.Title}}]</h4>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n                <div layout=\"row\" layout-align=\"start center\" *ngIf=\"projectMembers\" class=\"assignment project-field dropdown\" >\r\n                    <label>Assign to</label>\r\n                    <button class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">\r\n                    {{ toUpdateBug.AssignedTo }}\r\n                    <span class=\"caret\"></span></button>\r\n                    <ul class=\"dropdown-menu\">\r\n                        <li class=\"bm-padding clickable\" (click)=\"updateTicketAssignment(member)\" \r\n                            *ngFor='let member of projectMembers; trackBy: index;'>\r\n                            <span>{{member.Name}}</span>\r\n                        </li>\r\n                    </ul>\r\n                </div>\r\n                <div layout=\"row\" class=\"project-field bugPriority\" layout-align=\"start center\">\r\n                    <label>Select bug priority level</label>\r\n                    <select [(ngModel)]=\"toUpdateBug.PriorityId\">\r\n                        <option [ngValue]=\"prioType.Id\" *ngFor=\"let prioType of priorityTypes; trackBy: index;\">\r\n                        {{prioType.PriorityType1}}\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n\r\n                <!--project title-->\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"space-between center\">\r\n                    <label>Bug title</label>\r\n                    <input type=\"text\" [(ngModel)]=\"toUpdateBug.Title\" placeholder=\"Enter bug title title\" class=\"text-default\" flex=\"80\">\r\n                </div>\r\n\r\n                <!--project description [optional]-->\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"space-between center\">\r\n                    <label>Bug title</label>\r\n\r\n                    <textarea rows=\"4\" cols=\"50\" [(ngModel)]=\"toUpdateBug.Description\" placeholder=\"Add bug description [optional]\" flex=\"80\"></textarea>\r\n                </div>\r\n\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"start center\" layout-padding>\r\n                    <label>Start Date</label>\r\n                    <input type=\"text\" style=\"margin-left: 25px;\" id=\"updateStartDate\" class=\"text-default\">\r\n                </div>\r\n\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"start center\" layout-padding>\r\n                    <label>End Date</label>\r\n                    <input type=\"text\" style=\"margin-left: 33px;\" id=\"updateEndDate\" class=\"text-default\">\r\n                </div>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-primary\" (click)=\"updatebugticket()\">Save</button>\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\r\n            </div>\r\n        </div>\r\n\r\n    </div>\r\n</div>\r\n\r\n\r\n\r\n<!-- template for modal of updating bug status -->\r\n<div id=\"modal-updatebug\" class=\"modal fade\" role=\"dialog\">\r\n    <div class=\"modal-dialog\" *ngIf=\"toUpdateBug\">\r\n\r\n        <!-- Modal content-->\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                <h4 class=\"modal-title\">Update Status [{{toUpdateBug.Title}}]</h4>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n\r\n                <div layout=\"row\" class=\"project-field bugPriority\" layout-align=\"start center\">\r\n                    <label>Select updated status</label>\r\n                    <select [(ngModel)]=\"toUpdateBug.StatusId\">\r\n                    <option [ngValue]=\"status.Id\" *ngFor=\"let status of statusTypes; trackBy: index;\">\r\n                      {{status.Status}}\r\n                    </option>\r\n                  </select>\r\n                </div>\r\n\r\n                <div layout=\"row\" class=\"project-field\" layout-align=\"space-between center\">\r\n                    <label>Resolution Summary</label>\r\n\r\n                    <textarea rows=\"4\" cols=\"50\" [(ngModel)]=\"toUpdateBug.ResolutionSummary\" placeholder=\"Add resolution summary [optional]\"\r\n                        flex=\"80\"></textarea>\r\n                </div>\r\n\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-primary\" (click)=\"updateBugStatus()\">Save</button>\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<!-- template for modal for deleting issue -->\r\n<div id=\"modal-removeBug\" class=\"modal fade\" role=\"dialog\">\r\n    <div class=\"modal-dialog\" *ngIf=\"toRemoveBug\">\r\n\r\n        <!-- Modal content-->\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                <h4 class=\"modal-title\">Remove bug</h4>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n                Are you to remove bug [{{toRemoveBug.Title}}]\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-primary\" (click)=\"removeBug()\">Save</button>\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -927,6 +927,7 @@ module.exports = "<section id=\"dashboard\">\r\n\r\n\r\n\r\n    <div layout=\"co
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared_user_service__ = __webpack_require__("../../../../../src/shared/user.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared_issue_prio_status_service__ = __webpack_require__("../../../../../src/shared/issue-prio-status.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__shared_projectService_project_service__ = __webpack_require__("../../../../../src/shared/projectService/project.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -941,11 +942,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var DashboardComponent = (function () {
-    function DashboardComponent(http, router, userService, issueStatusAndPriority) {
+    function DashboardComponent(http, router, userService, projectService, issueStatusAndPriority) {
         this.http = http;
         this.router = router;
         this.userService = userService;
+        this.projectService = projectService;
         this.issueStatusAndPriority = issueStatusAndPriority;
         this.project = {
             title: undefined,
@@ -968,12 +971,48 @@ var DashboardComponent = (function () {
             }
             return data;
         };
+        this.getMembers = function (projectId) {
+            var _this = this;
+            this.projectService.getProjectMembers(projectId)
+                .subscribe(function (data) {
+                _this.projectMembers = data;
+            }, function (error) {
+                console.log('error');
+            }, function () {
+                console.log('done');
+            });
+        };
         this.handlePriorityTypesData = function (data) {
             this.priorityTypeFilter = {};
             for (var i = 0; i < data.length; i++) {
                 this.priorityTypeFilter[data[i].PriorityType1] = true;
             }
             return data;
+        };
+        this.saveBug = function () {
+            var _this = this;
+            this.http.post('Issue/Project/' + this.selectedProject.Id, {
+                Title: this.issue.title,
+                Description: this.issue.description,
+                PriorityId: this.selectedPriorityType.Id,
+                AssingTo: this.assignTicketTo.Id,
+                StartDate: $('#startDate').val(),
+                EndDate: $('#endDate').val()
+            })
+                .subscribe(function (result) {
+                _this.getIssues(_this.selectedProject.Id);
+            }, function (err) { return _this.doneAddingBug(); }, function () { return _this.doneAddingBug(); });
+        };
+        this.removeBug = function () {
+            var _this = this;
+            var url = 'Issue/Project/' + this.selectedProject.Id + '/';
+            this.http.delete(url + this.toRemoveBug.Id, {})
+                .subscribe(function (result) {
+                _this.getIssues(_this.selectedProject.Id);
+            }, function (err) { }, function () {
+                $('#modal-removeBug').modal('hide');
+                _this.toRemoveBug = undefined;
+            });
         };
         this.currentUser = userService.getUser();
         this.currentUserId = userService.getUserId();
@@ -983,12 +1022,19 @@ var DashboardComponent = (function () {
     DashboardComponent.prototype.ngOnInit = function () {
         this.getProjects();
         this.initializeModals();
+        $(function () {
+            $('#startDate').datepicker({ dateFormat: 'mm/dd/yy' });
+            $('#endDate').datepicker({ dateFormat: 'mm/dd/yy' });
+        });
     };
     DashboardComponent.prototype.getStatusTypes = function () {
         var _this = this;
         this.issueStatusAndPriority.getStatuses().subscribe(function (data) {
             _this.statusTypes = _this.handleStatusTypesData(data);
         });
+    };
+    DashboardComponent.prototype.selectMemberToAssign = function (member) {
+        this.assignTicketTo = member;
     };
     DashboardComponent.prototype.getPriorityTypes = function () {
         var _this = this;
@@ -1028,12 +1074,14 @@ var DashboardComponent = (function () {
         this.issue.description = undefined;
         this.issue.priority = undefined;
         this.selectedPriorityType = this.priorityTypes[0];
+        this.assignTicketTo = undefined;
         $(function () {
             $('#modal-reportbug').modal('toggle');
         });
     };
     DashboardComponent.prototype.getIssues = function (projectId) {
         var _this = this;
+        this.getMembers(projectId);
         this.http.get('Issue/Project/' + projectId)
             .subscribe(function (result) {
             var data = result.json();
@@ -1048,6 +1096,7 @@ var DashboardComponent = (function () {
             _this.projects = data;
             if (data.length > 0) {
                 _this.selectedProject = data[0];
+                _this.getMembers(_this.selectedProject.Id);
                 _this.getIssues(data[0].Id);
             }
         });
@@ -1060,37 +1109,26 @@ var DashboardComponent = (function () {
             _this.getUsersHandler(data);
         }, function (err) { return console.log(err); });
     };
-    DashboardComponent.prototype.saveBug = function () {
-        var _this = this;
-        this.http.post('Issue/Project/' + this.selectedProject.Id, {
-            Title: this.issue.title,
-            Description: this.issue.description,
-            PriorityId: this.selectedPriorityType.Id
-        })
-            .subscribe(function (result) {
-            _this.getIssues(_this.selectedProject.Id);
-        }, function (err) { return _this.doneAddingBug(); }, function () { return _this.doneAddingBug(); });
-    };
     DashboardComponent.prototype.openModalForRemovingBug = function (bug) {
         $('#modal-removeBug').modal('show');
         this.toRemoveBug = JSON.parse(JSON.stringify(bug));
         this.output.emit(this.toRemoveBug);
     };
-    DashboardComponent.prototype.removeBug = function () {
-        var _this = this;
-        var url = 'Issue/Project/' + this.selectedProject.Id + '/';
-        this.http.delete(url + this.toRemoveBug.Id, {})
-            .subscribe(function (result) {
-            _this.getIssues(_this.selectedProject.Id);
-        }, function (err) { }, function () {
-            $('#modal-removeBug').modal('hide');
-            _this.toRemoveBug = undefined;
-        });
-    };
     DashboardComponent.prototype.openModalForUpdatingIssueObject = function (issue) {
-        $('#modal-updatebugticket').modal('show');
+        $(function () {
+            $('#updateStartDate').datepicker({ dateFormat: 'mm/dd/yy' });
+            $('#updateEndDate').datepicker({ dateFormat: 'mm/dd/yy' });
+            $('#updateStartDate').datepicker('setDate', new Date(issue.StartDate));
+            $('#updateEndDate').datepicker('setDate', new Date(issue.EndDate));
+            $('#modal-updatebugticket').modal('show');
+        });
         this.toUpdateBug = JSON.parse(JSON.stringify(issue));
         this.output.emit(this.toUpdateBug);
+    };
+    DashboardComponent.prototype.updateTicketAssignment = function (member) {
+        console.log(member);
+        this.toUpdateBug.AssignedTo = member.Name;
+        this.toUpdateBug.AssignedToId = member.Id;
     };
     DashboardComponent.prototype.updatebugticket = function () {
         var _this = this;
@@ -1098,22 +1136,31 @@ var DashboardComponent = (function () {
             Id: this.toUpdateBug.Id,
             Title: this.toUpdateBug.Title,
             Description: this.toUpdateBug.Description,
-            PriorityId: this.toUpdateBug.PriorityId
+            PriorityId: this.toUpdateBug.PriorityId,
+            AssingTo: this.toUpdateBug.AssignedToId,
+            StartDate: $('#updateStartDate').val(),
+            EndDate: $('#updateEndDate').val()
         })
             .subscribe(function (result) {
             _this.getIssues(_this.selectedProject.Id);
         }, function (err) { return _this.toUpdateBug = undefined; }, function () {
             _this.toUpdateBug = undefined;
             $('#modal-updatebugticket').modal('hide');
+            $('#updateStartDate').datepicker({ dateFormat: 'mm/dd/yy' });
+            $('#updateEndDate').datepicker({ dateFormat: 'mm/dd/yy' });
         });
     };
     // helper methods
-    DashboardComponent.prototype.utcToLocalTime = function (timeString) {
+    DashboardComponent.prototype.utcToLocalTime = function (timeString, format) {
+        var defaultFormat = 'MM/DD/YYYY h:mm a';
         if (!timeString)
             return;
-        var utcDate = new Date(timeString.replace('T', ' ')), offset = new Date().getTimezoneOffset(), timeZoneDiff = offset + utcDate.getTimezoneOffset();
-        var localTime = new Date(utcDate.getTime() + (timeZoneDiff * 60 * 1000));
-        return moment(localTime).format('MM/DD/YYYY h:mm a');
+        var utcDate = new Date(timeString.replace('T', ' ') + ' UTC');
+        var localTime = new Date(utcDate.toString());
+        if (format) {
+            defaultFormat = format;
+        }
+        return moment(localTime).format(defaultFormat);
     };
     DashboardComponent.prototype.getIssuesHandler = function (data) {
         this.issues = [];
@@ -1123,6 +1170,8 @@ var DashboardComponent = (function () {
             issue.DateCreated = this.utcToLocalTime(issue.DateCreated);
             issue.DateClosed = this.utcToLocalTime(issue.DateClosed);
             issue.LastUpdateDate = this.utcToLocalTime(issue.LastUpdateDate);
+            issue.StartDate = this.utcToLocalTime(issue.StartDate, 'MM/DD/YYYY');
+            issue.EndDate = this.utcToLocalTime(issue.EndDate, 'MM/DD/YYYY');
             this.issues.push(issue);
         }
         this.output.emit(this.issues);
@@ -1168,10 +1217,10 @@ DashboardComponent = __decorate([
         template: __webpack_require__("../../../../../src/dashboard/dashboard.component.html"),
         styles: [__webpack_require__("../../../../../src/dashboard/dashboard.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* Http */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__shared_user_service__["a" /* UserService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__shared_user_service__["a" /* UserService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__shared_issue_prio_status_service__["a" /* IssueStatusAndPriority */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__shared_issue_prio_status_service__["a" /* IssueStatusAndPriority */]) === "function" && _d || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* Http */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__shared_user_service__["a" /* UserService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__shared_user_service__["a" /* UserService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_5__shared_projectService_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__shared_projectService_project_service__["a" /* ProjectService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_4__shared_issue_prio_status_service__["a" /* IssueStatusAndPriority */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__shared_issue_prio_status_service__["a" /* IssueStatusAndPriority */]) === "function" && _e || Object])
 ], DashboardComponent);
 
-var _a, _b, _c, _d;
+var _a, _b, _c, _d, _e;
 //# sourceMappingURL=dashboard.component.js.map
 
 /***/ }),
@@ -2043,12 +2092,16 @@ var HandyDandyTools = (function () {
     function HandyDandyTools() {
     }
     // helper methods
-    HandyDandyTools.prototype.utcToLocalTime = function (timeString) {
+    HandyDandyTools.prototype.utcToLocalTime = function (timeString, format) {
+        var defaultFormat = 'MM/DD/YYYY h:mm a';
         if (!timeString)
             return;
-        var utcDate = new Date(timeString.replace('T', ' ')), offset = new Date().getTimezoneOffset(), timeZoneDiff = offset + utcDate.getTimezoneOffset();
-        var localTime = new Date(utcDate.getTime() + (timeZoneDiff * 60 * 1000));
-        return moment(localTime).format('MM/DD/YYYY h:mm a');
+        var utcDate = new Date(timeString.replace('T', ' ') + ' UTC');
+        var localTime = new Date(utcDate.toString());
+        if (format) {
+            defaultFormat = format;
+        }
+        return moment(localTime).format(defaultFormat);
     };
     HandyDandyTools.prototype.copyObj = function (obj) {
         return JSON.parse(JSON.stringify(obj));
